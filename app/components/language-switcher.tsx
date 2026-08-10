@@ -8,35 +8,35 @@ import { LOCALES, type Locale } from "@/app/lib/i18n/locale";
 
 const LABELS: Record<Locale, string> = { de: "DE", en: "EN", fr: "FR" };
 
+// A native <select> instead of three separate buttons: it collapses to a
+// single ~50px control (critical on narrow phone headers, where three
+// always-visible buttons crowded out the rest of the header), and gets a
+// working native picker on mobile for free.
 export function LanguageSwitcher({ className = "" }: { className?: string }) {
   const { locale } = useDictionary();
   const [isPending, startTransition] = useTransition();
 
-  function handleSelect(next: Locale) {
-    if (next === locale || isPending) return;
+  function handleChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    const next = event.target.value as Locale;
+    if (next === locale) return;
     startTransition(() => {
       setLocale(next);
     });
   }
 
   return (
-    <div className={`flex items-center gap-1 font-mono text-xs ${className}`} aria-label="Sprache / Language / Langue">
+    <select
+      value={locale}
+      onChange={handleChange}
+      disabled={isPending}
+      aria-label="Sprache / Language / Langue"
+      className={`border border-ink/30 bg-transparent px-2 py-1 font-mono text-xs uppercase tracking-wide text-ink outline-none disabled:cursor-wait dark:border-ink-dark/30 dark:text-ink-dark ${className}`}
+    >
       {LOCALES.map((value) => (
-        <button
-          key={value}
-          type="button"
-          onClick={() => handleSelect(value)}
-          disabled={isPending}
-          aria-current={value === locale}
-          className={`px-1.5 py-1 uppercase tracking-wide transition-colors disabled:cursor-wait ${
-            value === locale
-              ? "font-semibold text-ink dark:text-ink-dark"
-              : "text-ink/40 hover:text-ink dark:text-ink-dark/40 dark:hover:text-ink-dark"
-          }`}
-        >
+        <option key={value} value={value} className="bg-paper text-ink dark:bg-paper-dark dark:text-ink-dark">
           {LABELS[value]}
-        </button>
+        </option>
       ))}
-    </div>
+    </select>
   );
 }

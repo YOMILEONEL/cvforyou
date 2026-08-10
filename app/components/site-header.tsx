@@ -14,7 +14,7 @@ export async function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-dashed border-ink/25 bg-paper/90 backdrop-blur-sm dark:border-ink-dark/25 dark:bg-paper-dark/90">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link
           href="/"
           className="flex items-center gap-2 font-serif text-xl font-semibold tracking-tight text-ink dark:text-ink-dark"
@@ -36,8 +36,8 @@ export async function SiteHeader() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-4">
-          <LanguageSwitcher className="hidden sm:flex" />
+        <div className="flex items-center gap-2 sm:gap-4">
+          <LanguageSwitcher />
           <Link
             href="/login"
             className="hidden text-sm font-medium text-ink/70 hover:text-ink sm:block dark:text-ink-dark/70 dark:hover:text-ink-dark"
@@ -46,7 +46,7 @@ export async function SiteHeader() {
           </Link>
           <Link
             href="/editor"
-            className="border border-ink bg-ink px-4 py-2 text-sm font-semibold text-paper shadow-[3px_3px_0_0_var(--color-rust)] transition-transform hover:-translate-y-0.5 hover:-translate-x-0.5 dark:border-ink-dark dark:bg-ink-dark dark:text-paper-dark"
+            className="border border-ink bg-ink px-3 py-2 text-sm font-semibold text-paper shadow-[3px_3px_0_0_var(--color-rust)] transition-transform hover:-translate-y-0.5 hover:-translate-x-0.5 sm:px-4 dark:border-ink-dark dark:bg-ink-dark dark:text-paper-dark"
           >
             {dict.header.createResume}
           </Link>
