@@ -20,7 +20,7 @@ export const de = {
     titleHighlight: "handgemacht",
     titleSuffix: "in wenigen Minuten.",
     subtitle:
-      "Vorlage wählen, Daten eingeben, Design anpassen — CVio zeigt dir sofort, wie dein fertiger Lebenslauf aussieht, und exportiert ihn druckfertig als PDF.",
+      "Vorlage wählen, Daten eingeben, Design anpassen — CVforYou zeigt dir sofort, wie dein fertiger Lebenslauf aussieht, und exportiert ihn druckfertig als PDF.",
     ctaPrimary: "Jetzt Lebenslauf erstellen",
     ctaSecondary: "Vorlagen ansehen →",
     badgeAts: "ATS geprüft",
@@ -65,7 +65,7 @@ export const de = {
     items: [
       { title: "Live-Vorschau", description: "Jede Änderung an deinen Daten oder deinem Design siehst du sofort im fertigen Layout." },
       { title: "Automatisches Speichern", description: "Deine Eingaben werden laufend gesichert — auch bei einem Verbindungsabbruch geht nichts verloren." },
-      { title: "Mehrsprachige Oberfläche", description: "Nutze CVio auf Deutsch, Englisch oder Französisch — auch dein Lebenslauf kann in einer dieser Sprachen erzeugt werden." },
+      { title: "Mehrsprachige Oberfläche", description: "Nutze CVforYou auf Deutsch, Englisch oder Französisch — auch dein Lebenslauf kann in einer dieser Sprachen erzeugt werden." },
       { title: "Mehrere Lebensläufe", description: "Lege für jede Bewerbung eine eigene Version an, ohne Daten neu eingeben zu müssen." },
       { title: "Datenschutz nach DSGVO", description: "Deine Daten gehören dir: Export und Löschung deines Profils sind jederzeit möglich." },
     ],
@@ -97,7 +97,7 @@ export const de = {
       forgotPasswordTitle: "Passwort-Reset folgt in Kürze.",
       submit: "Anmelden",
       submitPending: "Anmelden …",
-      newHere: "Neu bei CVio?",
+      newHere: "Neu bei CVforYou?",
       registerLink: "Jetzt registrieren",
     },
     register: {
@@ -294,7 +294,7 @@ export const de = {
       },
       languageToggleLabel: "Sprache des Lebenslaufs",
       languageToggleHint:
-        "Übersetzt automatisch generierte Beschriftungen (Abschnittsüberschriften, „Geboren am“ usw.). Deine eigenen Texte übersetzt CVio nicht.",
+        "Übersetzt automatisch generierte Beschriftungen (Abschnittsüberschriften, „Geboren am“ usw.). Deine eigenen Texte übersetzt CVforYou nicht.",
     },
     photoUpload: {
       upload: "Foto hochladen",
@@ -345,7 +345,7 @@ export const de = {
     kontakt: {
       eyebrow: "Rechtliches",
       title: "Kontakt",
-      subtitle: "Fragen, Feedback oder Anliegen rund um CVio? Schreib mir einfach eine E-Mail.",
+      subtitle: "Fragen, Feedback oder Anliegen rund um CVforYou? Schreib mir einfach eine E-Mail.",
     },
     datenschutz: {
       eyebrow: "Rechtliches",
@@ -363,11 +363,11 @@ export const de = {
         },
         cookies: {
           heading: "Cookies",
-          body: "CVio verwendet ausschließlich technisch notwendige Cookies zur Aufrechterhaltung deiner Anmeldesitzung (Session-Cookies von Supabase Auth) und zum Speichern deiner Spracheinstellung. Es werden keine Marketing-, Analyse- oder Tracking-Cookies eingesetzt.",
+          body: "CVforYou verwendet ausschließlich technisch notwendige Cookies zur Aufrechterhaltung deiner Anmeldesitzung (Session-Cookies von Supabase Auth) und zum Speichern deiner Spracheinstellung. Es werden keine Marketing-, Analyse- oder Tracking-Cookies eingesetzt.",
         },
         hosting: {
           heading: "Hosting und eingesetzte Dienstleister",
-          body: "CVio wird über Vercel gehostet. Datenbank, Authentifizierung und der Speicher für hochgeladene Fotos laufen über Supabase. Für den optionalen KI-Stellenabgleich wird die Google Gemini API genutzt — dabei werden die von dir eingegebenen Lebenslauf-Daten und die eingefügte Stellenausschreibung an Google übermittelt. Diese Anbieter können Daten auch außerhalb der EU verarbeiten; in diesem Fall stellen die Anbieter geeignete Garantien (z. B. EU-Standardvertragsklauseln) bereit.",
+          body: "CVforYou wird über Vercel gehostet. Datenbank, Authentifizierung und der Speicher für hochgeladene Fotos laufen über Supabase. Für den optionalen KI-Stellenabgleich wird die Google Gemini API genutzt — dabei werden die von dir eingegebenen Lebenslauf-Daten und die eingefügte Stellenausschreibung an Google übermittelt. Diese Anbieter können Daten auch außerhalb der EU verarbeiten; in diesem Fall stellen die Anbieter geeignete Garantien (z. B. EU-Standardvertragsklauseln) bereit.",
         },
         speicherdauer: {
           heading: "Speicherdauer",
@@ -387,7 +387,7 @@ export const de = {
         verantwortlich: { heading: "Verantwortlich für den Inhalt", body: "Steve Leonel Yomi Mbiakop (Anschrift wie oben)" },
         hinweis: {
           heading: "Hinweis zum Angebot",
-          body: "CVio ist ein privates, nicht-kommerzielles Projekt und wird ohne Gewinnerzielungsabsicht bereitgestellt. Es dient dem Erstellen und Exportieren eigener Lebensläufe im Freundes- und Bekanntenkreis des Betreibers.",
+          body: "CVforYou ist ein privates, nicht-kommerzielles Projekt und wird ohne Gewinnerzielungsabsicht bereitgestellt. Es dient dem Erstellen und Exportieren eigener Lebensläufe im Freundes- und Bekanntenkreis des Betreibers.",
         },
         haftung: {
           heading: "Haftung für Inhalte",

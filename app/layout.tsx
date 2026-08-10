@@ -23,19 +23,19 @@ const fraunces = Fraunces({
 
 const METADATA_BY_LOCALE = {
   de: {
-    title: "CVio – Lebenslauf in Minuten erstellen",
+    title: "CVforYou – Lebenslauf in Minuten erstellen",
     description:
-      "Erstelle mit CVio einen professionellen, ATS-optimierten Lebenslauf: Vorlage wählen, Daten eingeben, als PDF herunterladen.",
+      "Erstelle mit CVforYou einen professionellen, ATS-optimierten Lebenslauf: Vorlage wählen, Daten eingeben, als PDF herunterladen.",
   },
   en: {
-    title: "CVio – Build a resume in minutes",
+    title: "CVforYou – Build a resume in minutes",
     description:
-      "Build a professional, ATS-optimized resume with CVio: pick a template, enter your details, download it as a PDF.",
+      "Build a professional, ATS-optimized resume with CVforYou: pick a template, enter your details, download it as a PDF.",
   },
   fr: {
-    title: "CVio – Crée ton CV en quelques minutes",
+    title: "CVforYou – Crée ton CV en quelques minutes",
     description:
-      "Crée un CV professionnel et optimisé ATS avec CVio : choisis un modèle, saisis tes données, télécharge-le en PDF.",
+      "Crée un CV professionnel et optimisé ATS avec CVforYou : choisis un modèle, saisis tes données, télécharge-le en PDF.",
   },
 };
 

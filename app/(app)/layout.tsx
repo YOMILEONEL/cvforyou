@@ -33,7 +33,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             className="flex items-center gap-2 font-serif text-xl font-semibold tracking-tight text-ink dark:text-ink-dark"
           >
             <LogoMark className="h-6 w-6 text-rust" />
-            CVio
+            CVforYou
           </Link>
 
           <div className="flex items-center gap-2 sm:gap-4">

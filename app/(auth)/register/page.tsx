@@ -5,7 +5,7 @@ import { RegisterForm } from "@/app/(auth)/register/register-form";
 import { getDictionary } from "@/app/lib/i18n/get-dictionary";
 
 export const metadata: Metadata = {
-  title: "Registrieren – CVio",
+  title: "Registrieren – CVforYou",
 };
 
 export default async function RegisterPage() {

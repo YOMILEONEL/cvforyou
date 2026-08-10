@@ -6,8 +6,8 @@ import { getDictionary } from "@/app/lib/i18n/get-dictionary";
 import { TemplateGallery } from "@/app/vorlagen/template-gallery";
 
 export const metadata: Metadata = {
-  title: "Vorlagen – CVio",
-  description: "Alle CVio-Lebenslaufvorlagen: minimalistisch, modern oder kreativ — ATS-optimiert und frei anpassbar.",
+  title: "Vorlagen – CVforYou",
+  description: "Alle CVforYou-Lebenslaufvorlagen: minimalistisch, modern oder kreativ — ATS-optimiert und frei anpassbar.",
 };
 
 export default async function VorlagenPage() {

@@ -20,7 +20,7 @@ export async function SiteHeader() {
           className="flex items-center gap-2 font-serif text-xl font-semibold tracking-tight text-ink dark:text-ink-dark"
         >
           <LogoMark className="h-6 w-6 text-rust" />
-          CVio
+          CVforYou
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">

@@ -19,7 +19,7 @@ export const en: Dictionary = {
     titleHighlight: "handcrafted",
     titleSuffix: "in minutes.",
     subtitle:
-      "Pick a template, enter your details, adjust the design — CVio shows you instantly what your finished resume looks like, and exports it print-ready as a PDF.",
+      "Pick a template, enter your details, adjust the design — CVforYou shows you instantly what your finished resume looks like, and exports it print-ready as a PDF.",
     ctaPrimary: "Create your resume now",
     ctaSecondary: "Browse templates →",
     badgeAts: "ATS checked",
@@ -64,7 +64,7 @@ export const en: Dictionary = {
     items: [
       { title: "Live preview", description: "Every change to your data or design shows up instantly in the finished layout." },
       { title: "Auto-save", description: "Your input is saved continuously — nothing is lost even if the connection drops." },
-      { title: "Multilingual interface", description: "Use CVio in German, English, or French — your resume itself can also be generated in any of these languages." },
+      { title: "Multilingual interface", description: "Use CVforYou in German, English, or French — your resume itself can also be generated in any of these languages." },
       { title: "Multiple resumes", description: "Create a separate version for each application without re-entering your data." },
       { title: "GDPR-compliant privacy", description: "Your data belongs to you: exporting and deleting your profile is possible at any time." },
     ],
@@ -96,7 +96,7 @@ export const en: Dictionary = {
       forgotPasswordTitle: "Password reset is coming soon.",
       submit: "Log in",
       submitPending: "Logging in …",
-      newHere: "New to CVio?",
+      newHere: "New to CVforYou?",
       registerLink: "Sign up now",
     },
     register: {
@@ -293,7 +293,7 @@ export const en: Dictionary = {
       },
       languageToggleLabel: "Resume language",
       languageToggleHint:
-        "Translates automatically generated labels (section headings, \"Born on\", etc.). CVio does not translate your own written content.",
+        "Translates automatically generated labels (section headings, \"Born on\", etc.). CVforYou does not translate your own written content.",
     },
     photoUpload: {
       upload: "Upload photo",
@@ -344,7 +344,7 @@ export const en: Dictionary = {
     kontakt: {
       eyebrow: "Legal",
       title: "Contact",
-      subtitle: "Questions, feedback, or concerns about CVio? Just send me an email.",
+      subtitle: "Questions, feedback, or concerns about CVforYou? Just send me an email.",
     },
     datenschutz: {
       eyebrow: "Legal",
@@ -362,11 +362,11 @@ export const en: Dictionary = {
         },
         cookies: {
           heading: "Cookies",
-          body: "CVio only uses technically necessary cookies to maintain your login session (Supabase Auth session cookies) and to remember your language preference. No marketing, analytics, or tracking cookies are used.",
+          body: "CVforYou only uses technically necessary cookies to maintain your login session (Supabase Auth session cookies) and to remember your language preference. No marketing, analytics, or tracking cookies are used.",
         },
         hosting: {
           heading: "Hosting and service providers",
-          body: "CVio is hosted via Vercel. The database, authentication, and storage for uploaded photos run via Supabase. The optional AI job-match feature uses the Google Gemini API — for this, the resume data you enter and the pasted job posting are sent to Google. These providers may also process data outside the EU; in that case, the providers put appropriate safeguards in place (e.g. EU standard contractual clauses).",
+          body: "CVforYou is hosted via Vercel. The database, authentication, and storage for uploaded photos run via Supabase. The optional AI job-match feature uses the Google Gemini API — for this, the resume data you enter and the pasted job posting are sent to Google. These providers may also process data outside the EU; in that case, the providers put appropriate safeguards in place (e.g. EU standard contractual clauses).",
         },
         speicherdauer: {
           heading: "Retention period",
@@ -386,7 +386,7 @@ export const en: Dictionary = {
         verantwortlich: { heading: "Responsible for the content", body: "Steve Leonel Yomi Mbiakop (address as above)" },
         hinweis: {
           heading: "Note on this offering",
-          body: "CVio is a private, non-commercial project provided without any intention of making a profit. It serves to create and export resumes within the operator's circle of friends and acquaintances.",
+          body: "CVforYou is a private, non-commercial project provided without any intention of making a profit. It serves to create and export resumes within the operator's circle of friends and acquaintances.",
         },
         haftung: {
           heading: "Liability for content",

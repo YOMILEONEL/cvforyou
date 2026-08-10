@@ -1,6 +1,6 @@
 # API-Anfragen-Flow
 
-CVio hat **keine klassische REST-/JSON-API-Schicht**. Bis auf eine Ausnahme
+CVforYou hat **keine klassische REST-/JSON-API-Schicht**. Bis auf eine Ausnahme
 (PDF-Export) läuft jede Client-Server-Kommunikation über Next.js **Server
 Components** (lesen) und **Server Actions** (schreiben) — beides läuft im
 selben Next.js-Prozess wie das Rendering, es gibt keinen separaten

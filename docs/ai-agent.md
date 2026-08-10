@@ -90,7 +90,7 @@ komplett unterschiedlichen Gründen:
 
 | | Wer begrenzt? | Umfang | Wo im Code? |
 |---|---|---|---|
-| **Pro-Nutzer-Limit** | CVio selbst (Produktentscheidung) | 1 Check pro Nutzer pro Kalendertag | `resume_match_usage`-Tabelle, Primary Key `(user_id, checked_on)` |
+| **Pro-Nutzer-Limit** | CVforYou selbst (Produktentscheidung) | 1 Check pro Nutzer pro Kalendertag | `resume_match_usage`-Tabelle, Primary Key `(user_id, checked_on)` |
 | **App-weites Google-Kontingent** | Google (Gratis-Tier) | Aktuell **RPD 20 / RPM 5** für die Flash-Modelle — **für das ganze Google-Cloud-Projekt zusammen**, nicht pro Nutzer (siehe Google AI Studio → „Limite de débit") | HTTP 429 von Gemini, abgefangen in `gemini-client.ts` |
 
 **Warum ein Insert-first-Ansatz für das Pro-Nutzer-Limit?** Die Tabelle hat
@@ -141,7 +141,7 @@ dieses Problem ist beim Aufbau der Funktion aufgetreten — `gemini-2.5-flash`
 wurde für neu erstellte API-Keys ohne Vorwarnung gesperrt
 („This model … is no longer available to new users"), obwohl es in der
 Modell-Liste noch auftauchte. Der `-latest`-Alias verschiebt dieses Risiko
-zu Google, statt dass CVio bei jeder Modell-Ablösung erneut brechen kann.
+zu Google, statt dass CVforYou bei jeder Modell-Ablösung erneut brechen kann.
 
 ## Warum Gemini und nicht Claude
 

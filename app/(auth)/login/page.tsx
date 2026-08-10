@@ -5,7 +5,7 @@ import { LoginForm } from "@/app/(auth)/login/login-form";
 import { getDictionary } from "@/app/lib/i18n/get-dictionary";
 
 export const metadata: Metadata = {
-  title: "Anmelden – CVio",
+  title: "Anmelden – CVforYou",
 };
 
 type LoginPageProps = {

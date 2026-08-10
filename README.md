@@ -1,4 +1,4 @@
-# CVio
+# CVforYou
 
 Ein privater, nicht-kommerzieller Lebenslauf-Generator für den
 Freundes- und Bekanntenkreis: Lebenslauf im Editor zusammenstellen, aus

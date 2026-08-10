@@ -19,7 +19,7 @@ export const fr: Dictionary = {
     titleHighlight: "fait main",
     titleSuffix: "en quelques minutes.",
     subtitle:
-      "Choisis un modèle, saisis tes données, ajuste le design — CVio te montre instantanément à quoi ressemble ton CV final et l'exporte prêt à imprimer en PDF.",
+      "Choisis un modèle, saisis tes données, ajuste le design — CVforYou te montre instantanément à quoi ressemble ton CV final et l'exporte prêt à imprimer en PDF.",
     ctaPrimary: "Créer mon CV maintenant",
     ctaSecondary: "Voir les modèles →",
     badgeAts: "Vérifié ATS",
@@ -64,7 +64,7 @@ export const fr: Dictionary = {
     items: [
       { title: "Aperçu en direct", description: "Chaque modification de tes données ou de ton design apparaît immédiatement dans la mise en page finale." },
       { title: "Enregistrement automatique", description: "Tes saisies sont enregistrées en continu — rien n'est perdu même en cas de coupure de connexion." },
-      { title: "Interface multilingue", description: "Utilise CVio en allemand, anglais ou français — ton CV lui-même peut aussi être généré dans l'une de ces langues." },
+      { title: "Interface multilingue", description: "Utilise CVforYou en allemand, anglais ou français — ton CV lui-même peut aussi être généré dans l'une de ces langues." },
       { title: "Plusieurs CV", description: "Crée une version distincte pour chaque candidature sans ressaisir tes données." },
       { title: "Confidentialité conforme au RGPD", description: "Tes données t'appartiennent : export et suppression de ton profil possibles à tout moment." },
     ],
@@ -96,7 +96,7 @@ export const fr: Dictionary = {
       forgotPasswordTitle: "La réinitialisation du mot de passe arrive bientôt.",
       submit: "Se connecter",
       submitPending: "Connexion …",
-      newHere: "Nouveau sur CVio ?",
+      newHere: "Nouveau sur CVforYou ?",
       registerLink: "S'inscrire maintenant",
     },
     register: {
@@ -293,7 +293,7 @@ export const fr: Dictionary = {
       },
       languageToggleLabel: "Langue du CV",
       languageToggleHint:
-        "Traduit les libellés générés automatiquement (titres de section, « Né(e) le », etc.). CVio ne traduit pas ton propre texte.",
+        "Traduit les libellés générés automatiquement (titres de section, « Né(e) le », etc.). CVforYou ne traduit pas ton propre texte.",
     },
     photoUpload: {
       upload: "Ajouter une photo",
@@ -344,7 +344,7 @@ export const fr: Dictionary = {
     kontakt: {
       eyebrow: "Mentions légales",
       title: "Contact",
-      subtitle: "Des questions, retours ou remarques sur CVio ? Écris-moi simplement un e-mail.",
+      subtitle: "Des questions, retours ou remarques sur CVforYou ? Écris-moi simplement un e-mail.",
     },
     datenschutz: {
       eyebrow: "Mentions légales",
@@ -362,11 +362,11 @@ export const fr: Dictionary = {
         },
         cookies: {
           heading: "Cookies",
-          body: "CVio utilise exclusivement des cookies techniquement nécessaires pour maintenir ta session de connexion (cookies de session de Supabase Auth) et pour mémoriser ta préférence de langue. Aucun cookie marketing, analytique ou de suivi n'est utilisé.",
+          body: "CVforYou utilise exclusivement des cookies techniquement nécessaires pour maintenir ta session de connexion (cookies de session de Supabase Auth) et pour mémoriser ta préférence de langue. Aucun cookie marketing, analytique ou de suivi n'est utilisé.",
         },
         hosting: {
           heading: "Hébergement et prestataires utilisés",
-          body: "CVio est hébergé via Vercel. La base de données, l'authentification et le stockage des photos téléchargées passent par Supabase. La fonction optionnelle de comparaison d'offres par IA utilise l'API Google Gemini — à cette occasion, les données de CV que tu saisis et l'offre d'emploi collée sont transmises à Google. Ces prestataires peuvent aussi traiter des données en dehors de l'UE ; le cas échéant, ils mettent en place des garanties appropriées (par ex. clauses contractuelles types de l'UE).",
+          body: "CVforYou est hébergé via Vercel. La base de données, l'authentification et le stockage des photos téléchargées passent par Supabase. La fonction optionnelle de comparaison d'offres par IA utilise l'API Google Gemini — à cette occasion, les données de CV que tu saisis et l'offre d'emploi collée sont transmises à Google. Ces prestataires peuvent aussi traiter des données en dehors de l'UE ; le cas échéant, ils mettent en place des garanties appropriées (par ex. clauses contractuelles types de l'UE).",
         },
         speicherdauer: {
           heading: "Durée de conservation",
@@ -386,7 +386,7 @@ export const fr: Dictionary = {
         verantwortlich: { heading: "Responsable du contenu", body: "Steve Leonel Yomi Mbiakop (adresse comme ci-dessus)" },
         hinweis: {
           heading: "Remarque sur l'offre",
-          body: "CVio est un projet privé et non commercial, fourni sans but lucratif. Il permet de créer et d'exporter des CV personnels dans le cercle d'amis et de connaissances de l'exploitant.",
+          body: "CVforYou est un projet privé et non commercial, fourni sans but lucratif. Il permet de créer et d'exporter des CV personnels dans le cercle d'amis et de connaissances de l'exploitant.",
         },
         haftung: {
           heading: "Responsabilité du contenu",

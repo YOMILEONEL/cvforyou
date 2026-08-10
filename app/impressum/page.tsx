@@ -5,7 +5,7 @@ import { SiteHeader } from "@/app/components/site-header";
 import { getDictionary } from "@/app/lib/i18n/get-dictionary";
 
 export const metadata: Metadata = {
-  title: "Impressum – CVio",
+  title: "Impressum – CVforYou",
 };
 
 export default async function ImpressumPage() {

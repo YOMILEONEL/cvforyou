@@ -13,7 +13,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             className="flex items-center gap-2 font-serif text-xl font-semibold tracking-tight text-ink dark:text-ink-dark"
           >
             <LogoMark className="h-6 w-6 text-rust" />
-            CVio
+            CVforYou
           </Link>
           <LanguageSwitcher />
         </div>

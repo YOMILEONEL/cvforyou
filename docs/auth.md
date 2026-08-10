@@ -1,6 +1,6 @@
 # Auth
 
-CVio nutzt **Supabase Auth** (E-Mail + Passwort) für Registrierung, Login und
+CVforYou nutzt **Supabase Auth** (E-Mail + Passwort) für Registrierung, Login und
 Session-Verwaltung. Es gibt keinen eigenen Nutzer-/Passwort-Speicher in der
 App — Supabase übernimmt Hashing, Session-Tokens und Cookie-Refresh.
 

@@ -5,7 +5,7 @@ import { getJobMatchUsedToday } from "@/app/lib/match-actions";
 import { getResume } from "@/app/lib/resumes";
 
 export const metadata: Metadata = {
-  title: "Editor – CVio",
+  title: "Editor – CVforYou",
 };
 
 type EditorPageProps = {

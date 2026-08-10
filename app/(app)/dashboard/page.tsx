@@ -8,7 +8,7 @@ import { deleteResume } from "@/app/lib/resume-actions";
 import { listResumes } from "@/app/lib/resumes";
 
 export const metadata: Metadata = {
-  title: "Meine Lebensläufe – CVio",
+  title: "Meine Lebensläufe – CVforYou",
 };
 
 function formatRelativeTime(iso: string, relative: Dictionary["dashboard"]["relative"]): string {
