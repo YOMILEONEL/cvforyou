@@ -5,6 +5,7 @@ export type PersonalInfo = {
   email: string;
   phone: string;
   city: string;
+  photoUrl: string;
 };
 
 export type Experience = {
@@ -78,7 +79,7 @@ export type ListSectionId =
 
 export type SectionId = ListSectionId | "freitext";
 
-export type EditorSection = SectionId | "personal";
+export type EditorSection = SectionId | "personal" | "design";
 
 export type ResumeData = {
   personal: PersonalInfo;
@@ -99,14 +100,14 @@ export type SectionMeta = {
 };
 
 export const SECTION_LABELS: Record<SectionId, string> = {
-  experience: "Berufserfahrung",
+  freitext: "Freitext",
   education: "Ausbildung",
+  experience: "Berufserfahrung",
+  projects: "Projekte",
   skills: "Fähigkeiten",
   languages: "Sprachen",
   certificates: "Zertifikate",
-  projects: "Projekte",
   references: "Referenzen",
-  freitext: "Freitext",
 };
 
 export const initialResumeData: ResumeData = {
@@ -117,6 +118,7 @@ export const initialResumeData: ResumeData = {
     email: "",
     phone: "",
     city: "",
+    photoUrl: "",
   },
   experience: [],
   education: [],

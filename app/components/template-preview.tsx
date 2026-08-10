@@ -18,6 +18,21 @@ export function TemplatePreview({ template }: { template: Template }) {
     );
   }
 
+  if (template.style === "Klassisch") {
+    return (
+      <div className="flex h-40 flex-col gap-1.5 bg-paper p-4 dark:bg-paper-dark">
+        <div className="h-2 w-2/5 rounded-full bg-ink/80 dark:bg-ink-dark/80" />
+        <div className="mb-2 h-1.5 w-1/3 rounded-full bg-ink/20 dark:bg-ink-dark/20" />
+        <div className={`h-1 w-10 rounded-full ${accent}`} />
+        <div className="h-1.5 w-full rounded-full bg-ink/12 dark:bg-ink-dark/12" />
+        <div className="h-1.5 w-5/6 rounded-full bg-ink/12 dark:bg-ink-dark/12" />
+        <div className={`mt-2 h-1 w-10 rounded-full ${accent}`} />
+        <div className="h-1.5 w-full rounded-full bg-ink/12 dark:bg-ink-dark/12" />
+        <div className="h-1.5 w-2/3 rounded-full bg-ink/12 dark:bg-ink-dark/12" />
+      </div>
+    );
+  }
+
   if (template.style === "Kreativ") {
     return (
       <div className="h-40 overflow-hidden bg-paper dark:bg-paper-dark">

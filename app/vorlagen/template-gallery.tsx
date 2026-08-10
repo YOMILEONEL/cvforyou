@@ -11,6 +11,7 @@ const filters: Array<TemplateStyle | "Alle"> = [
   "Minimalistisch",
   "Modern",
   "Kreativ",
+  "Klassisch",
 ];
 
 const tilts = ["-rotate-1", "rotate-1", "-rotate-2", "rotate-2", "-rotate-1", "rotate-1"];
@@ -63,7 +64,7 @@ export function TemplateGallery() {
                 </p>
               </div>
               <Link
-                href="/editor"
+                href={`/editor?template=${encodeURIComponent(template.name)}`}
                 className="border border-ink px-3 py-1.5 text-sm font-medium text-ink opacity-0 transition-opacity group-hover:opacity-100 dark:border-ink-dark/60 dark:text-ink-dark"
               >
                 Auswählen

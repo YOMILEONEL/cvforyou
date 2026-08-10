@@ -19,6 +19,7 @@ export default async function EditorPage({ params }: EditorPageProps) {
     <EditorClient
       resumeId={resume.id}
       initialTitle={resume.title}
+      initialTemplateName={resume.templateName}
       initialResume={resume.data}
       initialSections={resume.sectionMeta}
     />

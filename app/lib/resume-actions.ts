@@ -9,7 +9,7 @@ export type SaveResumeResult = { error?: string; savedAt?: string };
 
 export async function saveResume(
   id: string,
-  patch: { title: string; data: ResumeData; sectionMeta: SectionMeta[] },
+  patch: { title: string; templateName: string; data: ResumeData; sectionMeta: SectionMeta[] },
 ): Promise<SaveResumeResult> {
   const supabase = await createClient();
   const {
@@ -24,6 +24,7 @@ export async function saveResume(
     .from("resumes")
     .update({
       title: patch.title || "Neuer Lebenslauf",
+      template_name: patch.templateName,
       data: patch.data,
       section_meta: patch.sectionMeta,
     })

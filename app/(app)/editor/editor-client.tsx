@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { ResumePreview } from "@/app/(app)/editor/resume-preview";
 import { SectionForm } from "@/app/(app)/editor/section-form";
 import { SectionNav } from "@/app/(app)/editor/section-nav";
+import { TemplatePicker } from "@/app/(app)/editor/template-picker";
 import {
   SECTION_LABELS,
   type EditorSection,
@@ -17,6 +18,7 @@ import { saveResume } from "@/app/lib/resume-actions";
 type EditorClientProps = {
   resumeId: string;
   initialTitle: string;
+  initialTemplateName: string;
   initialResume: ResumeData;
   initialSections: SectionMeta[];
 };
@@ -33,14 +35,17 @@ const SAVE_STATUS_LABEL: Record<SaveStatus, string> = {
 export function EditorClient({
   resumeId,
   initialTitle,
+  initialTemplateName,
   initialResume,
   initialSections,
 }: EditorClientProps) {
   const [title, setTitle] = useState(initialTitle);
+  const [templateName, setTemplateName] = useState(initialTemplateName);
   const [resume, setResume] = useState<ResumeData>(initialResume);
   const [sections, setSections] = useState<SectionMeta[]>(initialSections);
   const [activeSection, setActiveSection] = useState<EditorSection>("personal");
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
+  const [isDirty, setIsDirty] = useState(false);
 
   const isFirstRun = useRef(true);
 
@@ -50,15 +55,19 @@ export function EditorClient({
       return;
     }
 
+    setIsDirty(true);
     const timeout = setTimeout(() => {
       setSaveStatus("saving");
-      saveResume(resumeId, { title, data: resume, sectionMeta: sections })
-        .then((result) => setSaveStatus(result.error ? "error" : "saved"))
+      saveResume(resumeId, { title, templateName, data: resume, sectionMeta: sections })
+        .then((result) => {
+          setSaveStatus(result.error ? "error" : "saved");
+          if (!result.error) setIsDirty(false);
+        })
         .catch(() => setSaveStatus("error"));
     }, 1200);
 
     return () => clearTimeout(timeout);
-  }, [resumeId, title, resume, sections]);
+  }, [resumeId, title, templateName, resume, sections]);
 
   function updateResume(patch: Partial<ResumeData>) {
     setResume((prev) => ({ ...prev, ...patch }));
@@ -73,7 +82,11 @@ export function EditorClient({
   }
 
   const activeLabel =
-    activeSection === "personal" ? "Persönliche Daten" : SECTION_LABELS[activeSection];
+    activeSection === "personal"
+      ? "Persönliche Daten"
+      : activeSection === "design"
+        ? "Vorlage"
+        : SECTION_LABELS[activeSection];
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-6 py-10">
@@ -88,14 +101,23 @@ export function EditorClient({
           <span className="font-mono text-[10px] uppercase tracking-wide text-ink/40 dark:text-ink-dark/40">
             {SAVE_STATUS_LABEL[saveStatus]}
           </span>
-          <button
-            type="button"
-            disabled
-            title="PDF-Export folgt, sobald der Export-Baustein angebunden ist."
-            className="cursor-not-allowed border border-ink/20 px-3 py-1.5 text-xs font-medium text-ink/40 dark:border-ink-dark/20 dark:text-ink-dark/40"
-          >
-            Als PDF exportieren
-          </button>
+          {isDirty ? (
+            <button
+              type="button"
+              disabled
+              title="Warte, bis deine Änderungen gespeichert sind."
+              className="cursor-not-allowed border border-ink/20 px-3 py-1.5 text-xs font-medium text-ink/40 dark:border-ink-dark/20 dark:text-ink-dark/40"
+            >
+              Als PDF exportieren
+            </button>
+          ) : (
+            <a
+              href={`/api/resumes/${resumeId}/pdf`}
+              className="border border-ink px-3 py-1.5 text-xs font-medium text-ink hover:bg-ink hover:text-paper dark:border-ink-dark/60 dark:text-ink-dark dark:hover:bg-ink-dark dark:hover:text-paper-dark"
+            >
+              Als PDF exportieren
+            </a>
+          )}
         </div>
       </div>
 
@@ -119,14 +141,23 @@ export function EditorClient({
               {activeLabel}
             </h1>
           </div>
-          <SectionForm activeSection={activeSection} resume={resume} onChange={updateResume} />
+          {activeSection === "design" ? (
+            <TemplatePicker activeTemplate={templateName} onSelect={setTemplateName} />
+          ) : (
+            <SectionForm
+              activeSection={activeSection}
+              resume={resume}
+              resumeId={resumeId}
+              onChange={updateResume}
+            />
+          )}
         </div>
 
         <div className="lg:sticky lg:top-24 lg:self-start">
           <span className="mb-4 block font-mono text-xs uppercase tracking-[0.2em] text-ink/50 dark:text-ink-dark/50">
             Live-Vorschau
           </span>
-          <ResumePreview resume={resume} sections={sections} />
+          <ResumePreview resume={resume} sections={sections} templateName={templateName} />
         </div>
       </div>
     </div>

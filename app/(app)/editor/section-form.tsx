@@ -1,3 +1,4 @@
+import { PhotoUpload } from "@/app/(app)/editor/photo-upload";
 import { RepeatableSection } from "@/app/(app)/editor/repeatable-section";
 import {
   CEFR_LEVELS,
@@ -10,6 +11,7 @@ import {
 type SectionFormProps = {
   activeSection: EditorSection;
   resume: ResumeData;
+  resumeId: string;
   onChange: (patch: Partial<ResumeData>) => void;
 };
 
@@ -43,12 +45,19 @@ function TextAreaField({
   );
 }
 
-export function SectionForm({ activeSection, resume, onChange }: SectionFormProps) {
+export function SectionForm({ activeSection, resume, resumeId, onChange }: SectionFormProps) {
   if (activeSection === "personal") {
     const p = resume.personal;
     const update = (patch: Partial<typeof p>) => onChange({ personal: { ...p, ...patch } });
     return (
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="sm:col-span-2">
+          <PhotoUpload
+            resumeId={resumeId}
+            value={p.photoUrl}
+            onChange={(photoUrl) => update({ photoUrl })}
+          />
+        </div>
         <Field label="Vorname" value={p.firstName} onChange={(e) => update({ firstName: e.target.value })} />
         <Field label="Nachname" value={p.lastName} onChange={(e) => update({ lastName: e.target.value })} />
         <Field

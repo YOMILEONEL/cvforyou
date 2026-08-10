@@ -48,7 +48,7 @@ export function TemplateShowcase() {
                 </p>
               </div>
               <Link
-                href="/editor"
+                href={`/editor?template=${encodeURIComponent(template.name)}`}
                 className="border border-ink px-3 py-1.5 text-sm font-medium text-ink opacity-0 transition-opacity group-hover:opacity-100 dark:border-ink-dark/60 dark:text-ink-dark"
               >
                 Auswählen

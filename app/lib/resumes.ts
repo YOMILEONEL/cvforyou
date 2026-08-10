@@ -9,6 +9,7 @@ import {
   type SectionMeta,
 } from "@/app/(app)/editor/types";
 import { createClient } from "@/app/lib/supabase/server";
+import { templates } from "@/app/lib/templates";
 
 export type ResumeSummary = {
   id: string;
@@ -77,15 +78,19 @@ export async function getResume(id: string): Promise<ResumeRecord> {
   };
 }
 
-export async function createResumeAndRedirect(): Promise<never> {
+export async function createResumeAndRedirect(templateName?: string): Promise<never> {
   const { supabase, userId } = await requireUser();
+
+  const resolvedTemplate = templates.some((t) => t.name === templateName)
+    ? (templateName as string)
+    : "Berlin";
 
   const { data, error } = await supabase
     .from("resumes")
     .insert({
       user_id: userId,
       title: "Neuer Lebenslauf",
-      template_name: "Berlin",
+      template_name: resolvedTemplate,
       section_meta: initialSectionMeta,
       data: initialResumeData,
     })

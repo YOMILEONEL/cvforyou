@@ -1,5 +1,7 @@
 -- CVio: resumes table
--- Run once in the Supabase Dashboard -> SQL Editor for this project.
+-- Safe to run multiple times in the Supabase Dashboard -> SQL Editor for
+-- this project (tables/indexes use IF NOT EXISTS, policies/triggers are
+-- dropped and recreated).
 --
 -- Stores each resume as JSON that mirrors the client-side ResumeData /
 -- SectionMeta[] shape (see app/(app)/editor/types.ts). A single JSONB
@@ -23,19 +25,23 @@ create index if not exists resumes_user_id_idx on public.resumes (user_id);
 
 alter table public.resumes enable row level security;
 
+drop policy if exists "Users can view their own resumes" on public.resumes;
 create policy "Users can view their own resumes"
   on public.resumes for select
   using (auth.uid() = user_id);
 
+drop policy if exists "Users can insert their own resumes" on public.resumes;
 create policy "Users can insert their own resumes"
   on public.resumes for insert
   with check (auth.uid() = user_id);
 
+drop policy if exists "Users can update their own resumes" on public.resumes;
 create policy "Users can update their own resumes"
   on public.resumes for update
   using (auth.uid() = user_id)
   with check (auth.uid() = user_id);
 
+drop policy if exists "Users can delete their own resumes" on public.resumes;
 create policy "Users can delete their own resumes"
   on public.resumes for delete
   using (auth.uid() = user_id);
@@ -55,3 +61,42 @@ create trigger resumes_set_updated_at
   before update on public.resumes
   for each row
   execute function public.set_updated_at();
+
+-- CVio: resume photo storage
+-- Bucket is public-read (the photo ends up on a PDF the user shares
+-- externally anyway, and Puppeteer needs to fetch it without auth headers
+-- when rendering the PDF). Writes are restricted to the owning user via the
+-- first path segment, e.g. "<user_id>/<resume_id>-<timestamp>.jpg".
+
+insert into storage.buckets (id, name, public)
+values ('resume-photos', 'resume-photos', true)
+on conflict (id) do nothing;
+
+drop policy if exists "Anyone can view resume photos" on storage.objects;
+create policy "Anyone can view resume photos"
+  on storage.objects for select
+  using (bucket_id = 'resume-photos');
+
+drop policy if exists "Users can upload their own resume photos" on storage.objects;
+create policy "Users can upload their own resume photos"
+  on storage.objects for insert
+  with check (
+    bucket_id = 'resume-photos'
+    and (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+drop policy if exists "Users can update their own resume photos" on storage.objects;
+create policy "Users can update their own resume photos"
+  on storage.objects for update
+  using (
+    bucket_id = 'resume-photos'
+    and (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+drop policy if exists "Users can delete their own resume photos" on storage.objects;
+create policy "Users can delete their own resume photos"
+  on storage.objects for delete
+  using (
+    bucket_id = 'resume-photos'
+    and (storage.foldername(name))[1] = auth.uid()::text
+  );
