@@ -25,10 +25,14 @@ async function launchBrowser(): Promise<MinimalBrowser> {
       import("puppeteer-core"),
     ]);
 
+    // @sparticuz/chromium ships `headless_shell`, which only supports the
+    // "old" headless mode — must be passed explicitly, since puppeteer-core
+    // defaults to the new headless mode (unsupported by headless_shell) as
+    // of Puppeteer v22+.
     return puppeteerCore.launch({
-      args: chromium.args,
+      args: puppeteerCore.defaultArgs({ args: chromium.args, headless: "shell" }),
       executablePath: await chromium.executablePath(),
-      headless: true,
+      headless: "shell",
     }) as unknown as MinimalBrowser;
   }
 
