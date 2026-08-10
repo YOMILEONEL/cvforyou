@@ -1,50 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { RobotIcon } from "@/app/components/robot-icon";
 import { useDictionary } from "@/app/lib/i18n/dictionary-context";
-
-const STORAGE_KEY = "cvio-job-match-tip-dismissed";
 
 type JobMatchTipProps = {
   onOpenJobMatch: () => void;
 };
 
-// One-time onboarding tip: appears bottom-right the first time someone
-// opens the editor, points at the "Stellenabgleich" nav item, and stays
-// dismissed (localStorage) once closed — never nags again after that.
+// Onboarding tip pointing at "Stellenabgleich" — shows every time the
+// editor is opened (by design, not persisted). Dismissing it only hides it
+// for the current page view; it's back next time this component mounts.
 export function JobMatchTip({ onOpenJobMatch }: JobMatchTipProps) {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(true);
   const { dict } = useDictionary();
   const t = dict.editor.jobMatchTip;
-
-  useEffect(() => {
-    // Deliberately effect+setState, not a lazy useState initializer:
-    // localStorage doesn't exist during SSR, so an initializer would
-    // return a different value on the server than on the client and
-    // trigger a hydration mismatch. Starting at `false` and flipping
-    // post-mount keeps server and first client render identical.
-    try {
-      if (localStorage.getItem(STORAGE_KEY) !== "1") {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setVisible(true);
-      }
-    } catch {
-      // Storage unavailable (private browsing, blocked cookies) — show the
-      // tip anyway rather than silently failing closed.
-      setVisible(true);
-    }
-  }, []);
-
-  function dismiss() {
-    setVisible(false);
-    try {
-      localStorage.setItem(STORAGE_KEY, "1");
-    } catch {
-      // Nothing to fall back to — the tip will just reappear next visit.
-    }
-  }
 
   if (!visible) return null;
 
@@ -58,7 +29,7 @@ export function JobMatchTip({ onOpenJobMatch }: JobMatchTipProps) {
             type="button"
             onClick={() => {
               onOpenJobMatch();
-              dismiss();
+              setVisible(false);
             }}
             className="font-medium text-rust underline decoration-dashed decoration-rust/50 underline-offset-4 hover:decoration-rust"
           >
@@ -68,7 +39,7 @@ export function JobMatchTip({ onOpenJobMatch }: JobMatchTipProps) {
         </p>
         <button
           type="button"
-          onClick={dismiss}
+          onClick={() => setVisible(false)}
           className="self-end border border-ink bg-ink px-3 py-1 text-xs font-semibold text-paper transition-transform hover:-translate-y-0.5 hover:-translate-x-0.5 dark:border-ink-dark dark:bg-ink-dark dark:text-paper-dark"
         >
           {t.dismiss}
