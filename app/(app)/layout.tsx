@@ -1,7 +1,9 @@
 import Link from "next/link";
 
+import { LanguageSwitcher } from "@/app/components/language-switcher";
 import { LogoMark } from "@/app/components/logo-mark";
 import { logout } from "@/app/lib/auth-actions";
+import { getDictionary } from "@/app/lib/i18n/get-dictionary";
 import { createClient } from "@/app/lib/supabase/server";
 
 function getInitials(name: string): string {
@@ -17,9 +19,7 @@ function getInitials(name: string): string {
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const [{ data: { user } }, dict] = await Promise.all([supabase.auth.getUser(), getDictionary()]);
 
   const displayName =
     (user?.user_metadata?.full_name as string | undefined) || user?.email || "";
@@ -37,11 +37,12 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           </Link>
 
           <div className="flex items-center gap-4">
+            <LanguageSwitcher className="hidden sm:flex" />
             <Link
               href="/editor"
               className="hidden h-9 items-center border border-ink px-3 text-sm font-medium text-ink sm:flex dark:border-ink-dark/60 dark:text-ink-dark"
             >
-              Neuer Lebenslauf
+              {dict.appHeader.newResume}
             </Link>
             <span
               title={displayName || undefined}
@@ -54,7 +55,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
                 type="submit"
                 className="text-sm font-medium text-ink/60 hover:text-ink dark:text-ink-dark/60 dark:hover:text-ink-dark"
               >
-                Abmelden
+                {dict.appHeader.logout}
               </button>
             </form>
           </div>

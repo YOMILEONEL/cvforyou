@@ -4,15 +4,10 @@ import { useState } from "react";
 import Link from "next/link";
 
 import { TemplatePreview } from "@/app/components/template-preview";
+import { useDictionary } from "@/app/lib/i18n/dictionary-context";
 import { templates, type TemplateStyle } from "@/app/lib/templates";
 
-const filters: Array<TemplateStyle | "Alle"> = [
-  "Alle",
-  "Minimalistisch",
-  "Modern",
-  "Kreativ",
-  "Klassisch",
-];
+const styles: TemplateStyle[] = ["Minimalistisch", "Modern", "Kreativ", "Klassisch"];
 
 const tilts = ["-rotate-1", "rotate-1", "-rotate-2", "rotate-2", "-rotate-1", "rotate-1"];
 
@@ -20,11 +15,24 @@ export function TemplateGallery() {
   const [active, setActive] = useState<TemplateStyle | "Alle">("Alle");
   const visible =
     active === "Alle" ? templates : templates.filter((t) => t.style === active);
+  const { dict } = useDictionary();
+  const { styleNames } = dict.editor.design;
 
   return (
     <div>
       <div className="flex flex-wrap justify-center gap-3">
-        {filters.map((filter) => (
+        <button
+          type="button"
+          onClick={() => setActive("Alle")}
+          className={`border px-4 py-1.5 text-sm font-medium transition-colors ${
+            active === "Alle"
+              ? "border-ink bg-ink text-paper dark:border-ink-dark dark:bg-ink-dark dark:text-paper-dark"
+              : "border-ink/30 text-ink/70 hover:border-ink dark:border-ink-dark/30 dark:text-ink-dark/70 dark:hover:border-ink-dark"
+          }`}
+        >
+          {dict.vorlagenPage.filterAll}
+        </button>
+        {styles.map((filter) => (
           <button
             key={filter}
             type="button"
@@ -35,7 +43,7 @@ export function TemplateGallery() {
                 : "border-ink/30 text-ink/70 hover:border-ink dark:border-ink-dark/30 dark:text-ink-dark/70 dark:hover:border-ink-dark"
             }`}
           >
-            {filter}
+            {styleNames[filter]}
           </button>
         ))}
       </div>
@@ -50,7 +58,7 @@ export function TemplateGallery() {
               <TemplatePreview template={template} />
               {template.badge && (
                 <span className="absolute -left-1 -top-1 flex h-11 w-11 rotate-[-8deg] items-center justify-center rounded-full border border-dashed border-rust bg-sheet text-center font-mono text-[8px] font-semibold uppercase leading-tight text-rust dark:bg-sheet-dark">
-                  {template.badge}
+                  {dict.templatesSection.badges[template.badge]}
                 </span>
               )}
             </div>
@@ -60,14 +68,14 @@ export function TemplateGallery() {
                   {template.name}
                 </p>
                 <p className="font-mono text-xs uppercase tracking-wide text-ink/50 dark:text-ink-dark/50">
-                  {template.style}
+                  {styleNames[template.style]}
                 </p>
               </div>
               <Link
                 href={`/editor?template=${encodeURIComponent(template.name)}`}
                 className="border border-ink px-3 py-1.5 text-sm font-medium text-ink opacity-0 transition-opacity group-hover:opacity-100 dark:border-ink-dark/60 dark:text-ink-dark"
               >
-                Auswählen
+                {dict.templatesSection.select}
               </Link>
             </div>
           </div>

@@ -1,17 +1,20 @@
 import Link from "next/link";
 
-const footerLinks = [
-  { href: "/impressum", label: "Impressum" },
-  { href: "/datenschutz", label: "Datenschutz" },
-  { href: "/kontakt", label: "Kontakt" },
-];
+import { getDictionary } from "@/app/lib/i18n/get-dictionary";
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  const dict = await getDictionary();
+  const footerLinks = [
+    { href: "/impressum", label: dict.footer.impressum },
+    { href: "/datenschutz", label: dict.footer.datenschutz },
+    { href: "/kontakt", label: dict.footer.kontakt },
+  ];
+
   return (
     <footer className="border-t border-dashed border-ink/25 dark:border-ink-dark/25">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 py-8 sm:flex-row">
         <p className="font-mono text-xs text-ink/60 dark:text-ink-dark/60">
-          © {new Date().getFullYear()} CVio — für den privaten Gebrauch.
+          © {new Date().getFullYear()} CVio — {dict.footer.copyright}
         </p>
         <nav className="flex items-center gap-6">
           {footerLinks.map((link) => (

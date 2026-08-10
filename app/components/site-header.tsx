@@ -1,14 +1,17 @@
 import Link from "next/link";
 
+import { LanguageSwitcher } from "@/app/components/language-switcher";
 import { LogoMark } from "@/app/components/logo-mark";
+import { getDictionary } from "@/app/lib/i18n/get-dictionary";
 
-const navLinks = [
-  { href: "/vorlagen", label: "Vorlagen" },
-  { href: "/#so-funktionierts", label: "So funktioniert's" },
-  { href: "/#features", label: "Funktionen" },
-];
+export async function SiteHeader() {
+  const dict = await getDictionary();
+  const navLinks = [
+    { href: "/vorlagen", label: dict.header.navVorlagen },
+    { href: "/#so-funktionierts", label: dict.header.navHowItWorks },
+    { href: "/#features", label: dict.header.navFeatures },
+  ];
 
-export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-dashed border-ink/25 bg-paper/90 backdrop-blur-sm dark:border-ink-dark/25 dark:bg-paper-dark/90">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
@@ -34,17 +37,18 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-4">
+          <LanguageSwitcher className="hidden sm:flex" />
           <Link
             href="/login"
             className="hidden text-sm font-medium text-ink/70 hover:text-ink sm:block dark:text-ink-dark/70 dark:hover:text-ink-dark"
           >
-            Anmelden
+            {dict.header.login}
           </Link>
           <Link
             href="/editor"
             className="border border-ink bg-ink px-4 py-2 text-sm font-semibold text-paper shadow-[3px_3px_0_0_var(--color-rust)] transition-transform hover:-translate-y-0.5 hover:-translate-x-0.5 dark:border-ink-dark dark:bg-ink-dark dark:text-paper-dark"
           >
-            Lebenslauf erstellen
+            {dict.header.createResume}
           </Link>
         </div>
       </div>

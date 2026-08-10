@@ -1,4 +1,7 @@
+"use client";
+
 import { TemplatePreview } from "@/app/components/template-preview";
+import { useDictionary } from "@/app/lib/i18n/dictionary-context";
 import { templates } from "@/app/lib/templates";
 
 type TemplatePickerProps = {
@@ -7,12 +10,12 @@ type TemplatePickerProps = {
 };
 
 export function TemplatePicker({ activeTemplate, onSelect }: TemplatePickerProps) {
+  const { dict } = useDictionary();
+  const t = dict.editor.design;
+
   return (
     <div>
-      <p className="mb-4 text-sm text-ink/70 dark:text-ink-dark/70">
-        Wechsle jederzeit die Vorlage — deine Daten bleiben erhalten, nur das
-        Layout der Vorschau ändert sich.
-      </p>
+      <p className="mb-4 text-sm text-ink/70 dark:text-ink-dark/70">{t.templatePickerIntro}</p>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {templates.map((template) => {
           const isActive = template.name === activeTemplate;
@@ -34,12 +37,12 @@ export function TemplatePicker({ activeTemplate, onSelect }: TemplatePickerProps
                     {template.name}
                   </p>
                   <p className="font-mono text-[10px] uppercase tracking-wide text-ink/50 dark:text-ink-dark/50">
-                    {template.style}
+                    {t.styleNames[template.style]}
                   </p>
                 </div>
                 {isActive && (
                   <span className="font-mono text-[10px] uppercase tracking-wide text-rust">
-                    aktiv
+                    {t.active}
                   </span>
                 )}
               </div>

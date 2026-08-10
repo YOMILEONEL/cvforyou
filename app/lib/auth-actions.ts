@@ -3,42 +3,45 @@
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
+import { getDictionary } from "@/app/lib/i18n/get-dictionary";
 import { createClient } from "@/app/lib/supabase/server";
 
 export type AuthState = { error?: string } | undefined;
 
-const loginSchema = z.object({
-  email: z.string().trim().email({ message: "Bitte gib eine gültige E-Mail-Adresse ein." }),
-  password: z.string().min(1, { message: "Bitte gib dein Passwort ein." }),
-});
-
 export async function login(_prevState: AuthState, formData: FormData): Promise<AuthState> {
+  const dict = await getDictionary();
+  const loginSchema = z.object({
+    email: z.string().trim().email({ message: dict.auth.errors.invalidEmail }),
+    password: z.string().min(1, { message: dict.auth.errors.passwordRequired }),
+  });
+
   const parsed = loginSchema.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),
   });
 
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Ungültige Eingabe." };
+    return { error: parsed.error.issues[0]?.message ?? dict.auth.errors.genericInvalid };
   }
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
 
   if (error) {
-    return { error: "E-Mail oder Passwort ist falsch." };
+    return { error: dict.auth.errors.invalidLogin };
   }
 
   redirect("/dashboard");
 }
 
-const registerSchema = z.object({
-  name: z.string().trim().min(2, { message: "Bitte gib deinen Namen ein." }),
-  email: z.string().trim().email({ message: "Bitte gib eine gültige E-Mail-Adresse ein." }),
-  password: z.string().min(8, { message: "Das Passwort muss mindestens 8 Zeichen lang sein." }),
-});
-
 export async function register(_prevState: AuthState, formData: FormData): Promise<AuthState> {
+  const dict = await getDictionary();
+  const registerSchema = z.object({
+    name: z.string().trim().min(2, { message: dict.auth.errors.nameRequired }),
+    email: z.string().trim().email({ message: dict.auth.errors.invalidEmail }),
+    password: z.string().min(8, { message: dict.auth.errors.passwordTooShort }),
+  });
+
   const parsed = registerSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
@@ -46,7 +49,7 @@ export async function register(_prevState: AuthState, formData: FormData): Promi
   });
 
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Ungültige Eingabe." };
+    return { error: parsed.error.issues[0]?.message ?? dict.auth.errors.genericInvalid };
   }
 
   const supabase = await createClient();
@@ -59,10 +62,10 @@ export async function register(_prevState: AuthState, formData: FormData): Promi
   if (error) {
     const message =
       error.code === "user_already_exists"
-        ? "Für diese E-Mail existiert bereits ein Konto."
+        ? dict.auth.errors.userExists
         : error.code === "over_email_send_rate_limit"
-          ? "Zu viele Registrierungsversuche in kurzer Zeit. Bitte warte ein paar Minuten und versuche es erneut."
-          : "Registrierung fehlgeschlagen. Bitte versuche es erneut.";
+          ? dict.auth.errors.rateLimited
+          : dict.auth.errors.registerFailed;
     return { error: message };
   }
 

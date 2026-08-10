@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Fraunces, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
+import { DictionaryProvider } from "@/app/lib/i18n/dictionary-context";
+import { getDictionary, getLocale } from "@/app/lib/i18n/get-dictionary";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -18,19 +21,43 @@ const fraunces = Fraunces({
   style: ["normal", "italic"],
 });
 
-export const metadata: Metadata = {
-  title: "CVio – Lebenslauf in Minuten erstellen",
-  description:
-    "Erstelle mit CVio einen professionellen, ATS-optimierten Lebenslauf: Vorlage wählen, Daten eingeben, als PDF herunterladen.",
+const METADATA_BY_LOCALE = {
+  de: {
+    title: "CVio – Lebenslauf in Minuten erstellen",
+    description:
+      "Erstelle mit CVio einen professionellen, ATS-optimierten Lebenslauf: Vorlage wählen, Daten eingeben, als PDF herunterladen.",
+  },
+  en: {
+    title: "CVio – Build a resume in minutes",
+    description:
+      "Build a professional, ATS-optimized resume with CVio: pick a template, enter your details, download it as a PDF.",
+  },
+  fr: {
+    title: "CVio – Crée ton CV en quelques minutes",
+    description:
+      "Crée un CV professionnel et optimisé ATS avec CVio : choisis un modèle, saisis tes données, télécharge-le en PDF.",
+  },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  return METADATA_BY_LOCALE[locale];
+}
+
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const locale = await getLocale();
+  const dict = await getDictionary();
+
   return (
     <html
-      lang="de"
+      lang={locale}
       className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col font-sans">{children}</body>
+      <body className="flex min-h-full flex-col font-sans">
+        <DictionaryProvider dict={dict} locale={locale}>
+          {children}
+        </DictionaryProvider>
+      </body>
     </html>
   );
 }

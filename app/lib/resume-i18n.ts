@@ -25,6 +25,16 @@ export const RESUME_SECTION_LABELS: Record<ResumeLanguage, Record<SectionId, str
     certificates: "Certificates",
     references: "References",
   },
+  fr: {
+    freitext: "À propos",
+    education: "Formation",
+    experience: "Expérience professionnelle",
+    projects: "Projets",
+    skills: "Compétences",
+    languages: "Langues",
+    certificates: "Certifications",
+    references: "Références",
+  },
 };
 
 export function getSectionLabel(id: SectionId, language: ResumeLanguage): string {
@@ -66,5 +76,16 @@ export const RESUME_UI_STRINGS: Record<ResumeLanguage, ResumeUiStrings> = {
     contactPlaceholder: "Email · Phone · City",
     klassischContactPlaceholder: "City | Phone | Email",
     freitextDefaultTitle: "About Me",
+  },
+  fr: {
+    grade: "Note",
+    drivingLicense: "Permis de conduire",
+    bornOn: "Né(e) le",
+    bornIn: "Né(e) à",
+    inConnector: "à",
+    contactHeading: "Contact",
+    contactPlaceholder: "E-mail · Téléphone · Ville",
+    klassischContactPlaceholder: "Ville | Téléphone | E-mail",
+    freitextDefaultTitle: "À propos de moi",
   },
 };

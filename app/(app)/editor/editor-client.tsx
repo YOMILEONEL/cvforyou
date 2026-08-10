@@ -3,19 +3,20 @@
 import { useEffect, useRef, useState } from "react";
 
 import { JobMatchPanel } from "@/app/(app)/editor/job-match-panel";
+import { JobMatchTip } from "@/app/(app)/editor/job-match-tip";
 import { LanguageToggle } from "@/app/(app)/editor/language-toggle";
 import { ResumePreview } from "@/app/(app)/editor/resume-preview";
 import { SectionForm } from "@/app/(app)/editor/section-form";
 import { SectionNav } from "@/app/(app)/editor/section-nav";
 import { TemplatePicker } from "@/app/(app)/editor/template-picker";
-import {
-  SECTION_LABELS,
-  type EditorSection,
-  type ResumeData,
-  type ResumeLanguage,
-  type SectionId,
-  type SectionMeta,
+import type {
+  EditorSection,
+  ResumeData,
+  ResumeLanguage,
+  SectionId,
+  SectionMeta,
 } from "@/app/(app)/editor/types";
+import { useDictionary } from "@/app/lib/i18n/dictionary-context";
 import { saveResume } from "@/app/lib/resume-actions";
 import { RESUME_UI_STRINGS } from "@/app/lib/resume-i18n";
 
@@ -25,16 +26,10 @@ type EditorClientProps = {
   initialTemplateName: string;
   initialResume: ResumeData;
   initialSections: SectionMeta[];
+  jobMatchUsedToday: boolean;
 };
 
 type SaveStatus = "idle" | "saving" | "saved" | "error";
-
-const SAVE_STATUS_LABEL: Record<SaveStatus, string> = {
-  idle: "",
-  saving: "Speichert …",
-  saved: "Gespeichert",
-  error: "Fehler beim Speichern",
-};
 
 export function EditorClient({
   resumeId,
@@ -42,6 +37,7 @@ export function EditorClient({
   initialTemplateName,
   initialResume,
   initialSections,
+  jobMatchUsedToday,
 }: EditorClientProps) {
   const [title, setTitle] = useState(initialTitle);
   const [templateName, setTemplateName] = useState(initialTemplateName);
@@ -50,6 +46,15 @@ export function EditorClient({
   const [activeSection, setActiveSection] = useState<EditorSection>("personal");
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
   const [isDirty, setIsDirty] = useState(false);
+  const { dict } = useDictionary();
+  const t = dict.editor.topBar;
+
+  const SAVE_STATUS_LABEL: Record<SaveStatus, string> = {
+    idle: "",
+    saving: t.saveStatusSaving,
+    saved: t.saveStatusSaved,
+    error: t.saveStatusError,
+  };
 
   const isFirstRun = useRef(true);
 
@@ -100,12 +105,12 @@ export function EditorClient({
 
   const activeLabel =
     activeSection === "personal"
-      ? "Persönliche Daten"
+      ? dict.editor.nav.personalData
       : activeSection === "design"
-        ? "Vorlage"
+        ? dict.editor.nav.design
         : activeSection === "match"
-          ? "Stellenabgleich"
-          : SECTION_LABELS[activeSection];
+          ? dict.editor.nav.jobMatch
+          : dict.editor.nav.sectionNames[activeSection];
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-6 py-10">
@@ -113,7 +118,7 @@ export function EditorClient({
         <input
           value={title}
           onChange={(event) => setTitle(event.target.value)}
-          placeholder="Titel des Lebenslaufs"
+          placeholder={t.titlePlaceholder}
           className="w-full max-w-sm border-b border-dashed border-ink/30 bg-transparent pb-1 font-serif text-2xl font-medium text-ink outline-none focus:border-rust sm:w-auto dark:border-ink-dark/30 dark:text-ink-dark"
         />
         <div className="flex items-center gap-3">
@@ -124,17 +129,17 @@ export function EditorClient({
             <button
               type="button"
               disabled
-              title="Warte, bis deine Änderungen gespeichert sind."
+              title={t.exportPdfWaitTitle}
               className="cursor-not-allowed border border-ink/20 px-3 py-1.5 text-xs font-medium text-ink/40 dark:border-ink-dark/20 dark:text-ink-dark/40"
             >
-              Als PDF exportieren
+              {t.exportPdf}
             </button>
           ) : (
             <a
               href={`/api/resumes/${resumeId}/pdf`}
               className="border border-ink px-3 py-1.5 text-xs font-medium text-ink hover:bg-ink hover:text-paper dark:border-ink-dark/60 dark:text-ink-dark dark:hover:bg-ink-dark dark:hover:text-paper-dark"
             >
-              Als PDF exportieren
+              {t.exportPdf}
             </a>
           )}
         </div>
@@ -154,7 +159,7 @@ export function EditorClient({
         <div className="flex flex-col gap-4">
           <div>
             <span className="font-mono text-xs uppercase tracking-[0.2em] text-rust">
-              Bearbeiten
+              {t.editingLabel}
             </span>
             <h1 className="mt-1 font-serif text-2xl font-medium text-ink dark:text-ink-dark">
               {activeLabel}
@@ -166,7 +171,7 @@ export function EditorClient({
               <TemplatePicker activeTemplate={templateName} onSelect={setTemplateName} />
             </div>
           ) : activeSection === "match" ? (
-            <JobMatchPanel resume={resume} />
+            <JobMatchPanel resume={resume} usedToday={jobMatchUsedToday} />
           ) : (
             <SectionForm
               activeSection={activeSection}
@@ -179,11 +184,13 @@ export function EditorClient({
 
         <div className="lg:sticky lg:top-24 lg:self-start">
           <span className="mb-4 block font-mono text-xs uppercase tracking-[0.2em] text-ink/50 dark:text-ink-dark/50">
-            Live-Vorschau
+            {t.livePreview}
           </span>
           <ResumePreview resume={resume} sections={sections} templateName={templateName} />
         </div>
       </div>
+
+      <JobMatchTip onOpenJobMatch={() => setActiveSection("match")} />
     </div>
   );
 }

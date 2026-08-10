@@ -1,26 +1,27 @@
 import Link from "next/link";
 
 import { TemplatePreview } from "@/app/components/template-preview";
+import { getDictionary } from "@/app/lib/i18n/get-dictionary";
 import { templates } from "@/app/lib/templates";
 
 // Small alternating tilt so the grid reads like scattered pages on a desk.
 const tilts = ["-rotate-1", "rotate-1", "-rotate-2", "rotate-2", "-rotate-1", "rotate-1"];
 
-export function TemplateShowcase() {
+export async function TemplateShowcase() {
+  const dict = await getDictionary();
   const teaser = templates.slice(0, 6);
 
   return (
     <section id="templates" className="mx-auto max-w-6xl px-6 py-24">
       <div className="mx-auto max-w-2xl text-center">
         <span className="font-mono text-xs uppercase tracking-[0.2em] text-rust">
-          01 — Vorlagen
+          {dict.templatesSection.eyebrow}
         </span>
         <h2 className="mt-3 font-serif text-3xl font-medium tracking-tight text-ink sm:text-4xl dark:text-ink-dark">
-          Vorlagen, die überzeugen
+          {dict.templatesSection.title}
         </h2>
         <p className="mt-4 text-lg text-ink/70 dark:text-ink-dark/70">
-          Alle Vorlagen sind für Bewerbermanagementsysteme (ATS) optimiert und
-          lassen sich in Farbe, Schrift und Layout anpassen.
+          {dict.templatesSection.subtitle}
         </p>
       </div>
 
@@ -34,7 +35,7 @@ export function TemplateShowcase() {
               <TemplatePreview template={template} />
               {template.badge && (
                 <span className="absolute -left-1 -top-1 flex h-11 w-11 rotate-[-8deg] items-center justify-center rounded-full border border-dashed border-rust bg-sheet text-center font-mono text-[8px] font-semibold uppercase leading-tight text-rust dark:bg-sheet-dark">
-                  {template.badge}
+                  {dict.templatesSection.badges[template.badge]}
                 </span>
               )}
             </div>
@@ -44,14 +45,14 @@ export function TemplateShowcase() {
                   {template.name}
                 </p>
                 <p className="font-mono text-xs uppercase tracking-wide text-ink/50 dark:text-ink-dark/50">
-                  {template.style}
+                  {dict.editor.design.styleNames[template.style]}
                 </p>
               </div>
               <Link
                 href={`/editor?template=${encodeURIComponent(template.name)}`}
                 className="border border-ink px-3 py-1.5 text-sm font-medium text-ink opacity-0 transition-opacity group-hover:opacity-100 dark:border-ink-dark/60 dark:text-ink-dark"
               >
-                Auswählen
+                {dict.templatesSection.select}
               </Link>
             </div>
           </div>
@@ -63,7 +64,7 @@ export function TemplateShowcase() {
           href="/vorlagen"
           className="font-medium text-ink underline decoration-dashed decoration-ink/40 underline-offset-4 hover:decoration-ink dark:text-ink-dark dark:decoration-ink-dark/40"
         >
-          Alle Vorlagen ansehen →
+          {dict.templatesSection.viewAll}
         </Link>
       </div>
     </section>

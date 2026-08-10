@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import type { ResumeData, SectionMeta } from "@/app/(app)/editor/types";
+import { getDictionary } from "@/app/lib/i18n/get-dictionary";
 import { createClient } from "@/app/lib/supabase/server";
 
 export type SaveResumeResult = { error?: string; savedAt?: string };
@@ -15,9 +16,10 @@ export async function saveResume(
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const dict = await getDictionary();
 
   if (!user) {
-    return { error: "Nicht angemeldet." };
+    return { error: dict.common.notAuthenticated };
   }
 
   const { error } = await supabase
@@ -32,7 +34,7 @@ export async function saveResume(
     .eq("user_id", user.id);
 
   if (error) {
-    return { error: "Speichern fehlgeschlagen." };
+    return { error: dict.common.saveFailed };
   }
 
   revalidatePath("/dashboard");

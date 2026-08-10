@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 
+import { useDictionary } from "@/app/lib/i18n/dictionary-context";
 import { createClient } from "@/app/lib/supabase/client";
 
 type PhotoUploadProps = {
@@ -16,6 +17,8 @@ export function PhotoUpload({ resumeId, value, onChange }: PhotoUploadProps) {
   const [status, setStatus] = useState<"idle" | "uploading" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const { dict } = useDictionary();
+  const t = dict.editor.photoUpload;
 
   async function handleFileSelected(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -24,12 +27,12 @@ export function PhotoUpload({ resumeId, value, onChange }: PhotoUploadProps) {
 
     if (!file.type.startsWith("image/")) {
       setStatus("error");
-      setErrorMessage("Bitte wähle eine Bilddatei aus.");
+      setErrorMessage(t.errorFileType);
       return;
     }
     if (file.size > MAX_SIZE_BYTES) {
       setStatus("error");
-      setErrorMessage("Das Foto darf höchstens 5 MB groß sein.");
+      setErrorMessage(t.errorFileSize);
       return;
     }
 
@@ -43,7 +46,7 @@ export function PhotoUpload({ resumeId, value, onChange }: PhotoUploadProps) {
 
     if (!user) {
       setStatus("error");
-      setErrorMessage("Nicht angemeldet.");
+      setErrorMessage(dict.common.notAuthenticated);
       return;
     }
 
@@ -56,7 +59,7 @@ export function PhotoUpload({ resumeId, value, onChange }: PhotoUploadProps) {
 
     if (error) {
       setStatus("error");
-      setErrorMessage("Upload fehlgeschlagen. Bitte versuche es erneut.");
+      setErrorMessage(t.errorUploadFailed);
       return;
     }
 
@@ -72,7 +75,7 @@ export function PhotoUpload({ resumeId, value, onChange }: PhotoUploadProps) {
           // eslint-disable-next-line @next/next/no-img-element
           <img src={value} alt="" className="h-full w-full object-cover" />
         ) : (
-          <span className="text-xs text-ink/30 dark:text-ink-dark/30">Foto</span>
+          <span className="text-xs text-ink/30 dark:text-ink-dark/30">{t.placeholder}</span>
         )}
       </div>
 
@@ -84,7 +87,7 @@ export function PhotoUpload({ resumeId, value, onChange }: PhotoUploadProps) {
             disabled={status === "uploading"}
             className="border border-ink/30 px-3 py-1.5 text-sm font-medium text-ink disabled:cursor-not-allowed disabled:opacity-60 dark:border-ink-dark/30 dark:text-ink-dark"
           >
-            {status === "uploading" ? "Lädt hoch …" : value ? "Foto ersetzen" : "Foto hochladen"}
+            {status === "uploading" ? t.uploading : value ? t.replace : t.upload}
           </button>
           {value && (
             <button
@@ -92,13 +95,11 @@ export function PhotoUpload({ resumeId, value, onChange }: PhotoUploadProps) {
               onClick={() => onChange("")}
               className="text-sm text-rust hover:underline"
             >
-              Entfernen
+              {t.remove}
             </button>
           )}
         </div>
-        <p className="text-xs text-ink/50 dark:text-ink-dark/50">
-          Wird nur in Vorlagen mit Foto angezeigt (nicht bei &bdquo;Klassisch&ldquo;). Max. 5 MB.
-        </p>
+        <p className="text-xs text-ink/50 dark:text-ink-dark/50">{t.hint}</p>
         {status === "error" && <p className="text-xs text-rust">{errorMessage}</p>}
         <input
           ref={inputRef}

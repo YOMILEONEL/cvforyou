@@ -1,6 +1,9 @@
+"use client";
+
+import type { PersonalInfo, ResumeData, ResumeLanguage, SectionMeta } from "@/app/(app)/editor/types";
+import { useDictionary } from "@/app/lib/i18n/dictionary-context";
 import { getSectionLabel, RESUME_UI_STRINGS } from "@/app/lib/resume-i18n";
 import { templates } from "@/app/lib/templates";
-import type { PersonalInfo, ResumeData, ResumeLanguage, SectionMeta } from "@/app/(app)/editor/types";
 
 type ResumePreviewProps = {
   resume: ResumeData;
@@ -238,6 +241,8 @@ function SectionsList({
   sections: SectionMeta[];
   dense?: boolean;
 }) {
+  const { dict } = useDictionary();
+
   return (
     <div className="flex flex-col gap-6">
       {sections
@@ -247,9 +252,7 @@ function SectionsList({
         ))}
 
       {isResumeEmpty(resume) && (
-        <p className="text-sm text-ink/40 dark:text-ink-dark/40">
-          Deine Eingaben erscheinen hier live, sobald du links Daten einträgst.
-        </p>
+        <p className="text-sm text-ink/40 dark:text-ink-dark/40">{dict.editor.emptyPreview}</p>
       )}
     </div>
   );

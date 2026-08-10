@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { EditorClient } from "@/app/(app)/editor/editor-client";
+import { getJobMatchUsedToday } from "@/app/lib/match-actions";
 import { getResume } from "@/app/lib/resumes";
 
 export const metadata: Metadata = {
@@ -13,7 +14,7 @@ type EditorPageProps = {
 
 export default async function EditorPage({ params }: EditorPageProps) {
   const { id } = await params;
-  const resume = await getResume(id);
+  const [resume, jobMatchUsedToday] = await Promise.all([getResume(id), getJobMatchUsedToday()]);
 
   return (
     <EditorClient
@@ -22,6 +23,7 @@ export default async function EditorPage({ params }: EditorPageProps) {
       initialTemplateName={resume.templateName}
       initialResume={resume.data}
       initialSections={resume.sectionMeta}
+      jobMatchUsedToday={jobMatchUsedToday}
     />
   );
 }

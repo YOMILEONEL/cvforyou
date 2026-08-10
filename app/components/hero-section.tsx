@@ -1,18 +1,22 @@
 import Link from "next/link";
 
-export function HeroSection() {
+import { getDictionary } from "@/app/lib/i18n/get-dictionary";
+
+export async function HeroSection() {
+  const dict = await getDictionary();
+
   return (
     <section className="mx-auto max-w-6xl px-6 py-20 md:py-28">
       <div className="grid gap-16 md:grid-cols-2 md:items-center">
         <div className="flex flex-col items-start gap-6">
           <span className="font-mono text-xs uppercase tracking-[0.2em] text-rust">
-            Lebenslauf-Generator · kostenlos
+            {dict.hero.badge}
           </span>
 
           <h1 className="font-serif text-4xl leading-[1.1] font-medium tracking-tight text-ink sm:text-5xl dark:text-ink-dark">
-            Dein Lebenslauf,{" "}
+            {dict.hero.titlePrefix}{" "}
             <span className="relative whitespace-nowrap">
-              handgemacht
+              {dict.hero.titleHighlight}
               <svg
                 aria-hidden="true"
                 viewBox="0 0 200 12"
@@ -28,13 +32,11 @@ export function HeroSection() {
                 />
               </svg>
             </span>{" "}
-            in wenigen Minuten.
+            {dict.hero.titleSuffix}
           </h1>
 
           <p className="max-w-md text-lg leading-8 text-ink/70 dark:text-ink-dark/70">
-            Vorlage wählen, Daten eingeben, Design anpassen — CVio zeigt dir
-            sofort, wie dein fertiger Lebenslauf aussieht, und exportiert ihn
-            druckfertig als PDF.
+            {dict.hero.subtitle}
           </p>
 
           <div className="flex flex-col gap-4 sm:flex-row">
@@ -42,13 +44,13 @@ export function HeroSection() {
               href="/editor"
               className="flex h-12 items-center justify-center border border-ink bg-ink px-6 text-base font-semibold text-paper shadow-[4px_4px_0_0_var(--color-rust)] transition-transform hover:-translate-y-0.5 hover:-translate-x-0.5 dark:border-ink-dark dark:bg-ink-dark dark:text-paper-dark"
             >
-              Jetzt Lebenslauf erstellen
+              {dict.hero.ctaPrimary}
             </Link>
             <Link
               href="/vorlagen"
               className="flex h-12 items-center justify-center gap-2 px-2 text-base font-medium text-ink underline decoration-dashed decoration-ink/40 underline-offset-4 hover:decoration-ink dark:text-ink-dark dark:decoration-ink-dark/40 dark:hover:decoration-ink-dark"
             >
-              Vorlagen ansehen →
+              {dict.hero.ctaSecondary}
             </Link>
           </div>
         </div>
@@ -92,16 +94,14 @@ export function HeroSection() {
             aria-hidden="true"
             className="absolute -bottom-6 -left-8 flex h-20 w-20 rotate-[-9deg] items-center justify-center rounded-full border-2 border-dashed border-rust bg-paper text-center font-mono text-[9px] uppercase leading-tight tracking-wide text-rust dark:bg-paper-dark"
           >
-            ATS
-            <br />
-            geprüft
+            {dict.hero.badgeAts}
           </div>
 
           <div
             aria-hidden="true"
             className="absolute -top-5 -right-6 rotate-[6deg] border border-ink bg-ochre/90 px-3 py-1.5 font-mono text-[11px] font-medium text-ink shadow-[3px_3px_0_0_var(--color-ink)]"
           >
-            ⏱ fertig in 5 Min.
+            {dict.hero.badgeTime}
           </div>
         </div>
       </div>

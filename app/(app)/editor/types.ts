@@ -91,7 +91,7 @@ export type EditorSection = SectionId | "personal" | "design" | "match";
 // translates the app's own generated labels ("Berufserfahrung" -> "Work
 // Experience", "Geboren am" -> "Born on", etc.), not the user's own typed
 // content.
-export type ResumeLanguage = "de" | "en";
+export type ResumeLanguage = "de" | "en" | "fr";
 
 export type ResumeData = {
   personal: PersonalInfo;

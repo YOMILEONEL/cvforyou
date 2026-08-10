@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { SiteFooter } from "@/app/components/site-footer";
 import { SiteHeader } from "@/app/components/site-header";
+import { getDictionary } from "@/app/lib/i18n/get-dictionary";
 import { TemplateGallery } from "@/app/vorlagen/template-gallery";
 
 export const metadata: Metadata = {
@@ -9,7 +10,10 @@ export const metadata: Metadata = {
   description: "Alle CVio-Lebenslaufvorlagen: minimalistisch, modern oder kreativ — ATS-optimiert und frei anpassbar.",
 };
 
-export default function VorlagenPage() {
+export default async function VorlagenPage() {
+  const dict = await getDictionary();
+  const t = dict.vorlagenPage;
+
   return (
     <div className="flex flex-1 flex-col bg-paper text-ink dark:bg-paper-dark dark:text-ink-dark">
       <SiteHeader />
@@ -17,14 +21,13 @@ export default function VorlagenPage() {
         <section className="mx-auto max-w-6xl px-6 py-20">
           <div className="mx-auto max-w-2xl text-center">
             <span className="font-mono text-xs uppercase tracking-[0.2em] text-rust">
-              Vorlagen
+              {t.eyebrow}
             </span>
             <h1 className="mt-3 font-serif text-4xl font-medium tracking-tight text-ink sm:text-5xl dark:text-ink-dark">
-              Wähle deinen Stil
+              {t.title}
             </h1>
             <p className="mt-4 text-lg text-ink/70 dark:text-ink-dark/70">
-              Jede Vorlage ist ATS-optimiert und lässt sich im Editor in
-              Farbe, Schriftart und Layout anpassen.
+              {t.subtitle}
             </p>
           </div>
 

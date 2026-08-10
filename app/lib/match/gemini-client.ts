@@ -3,7 +3,17 @@ import "server-only";
 import { GoogleGenerativeAI, GoogleGenerativeAIFetchError, SchemaType, type ResponseSchema } from "@google/generative-ai";
 import { z } from "zod";
 
-import type { ResumeData } from "@/app/(app)/editor/types";
+import type { ResumeData, ResumeLanguage } from "@/app/(app)/editor/types";
+import { getDictionary } from "@/app/lib/i18n/get-dictionary";
+
+// Name Gemini can reliably act on in its own instruction — not the resume's
+// UI label ("Français"), an actual language name for the "respond in X"
+// instruction.
+const RESPONSE_LANGUAGE_NAMES: Record<ResumeLanguage, string> = {
+  de: "Deutsch",
+  en: "Englisch",
+  fr: "Französisch",
+};
 
 export type ResumeMatchResult = {
   score: number;
@@ -138,9 +148,12 @@ export async function matchResumeAgainstJobPosting(
   resume: ResumeData,
   jobPosting: string,
 ): Promise<ResumeMatchResult> {
+  const dict = await getDictionary();
+  const t = dict.editor.jobMatch;
+
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    throw new ResumeMatchError("GEMINI_API_KEY ist auf dem Server nicht konfiguriert.", "missing_api_key");
+    throw new ResumeMatchError(t.errorMissingApiKey, "missing_api_key");
   }
 
   const genAI = new GoogleGenerativeAI(apiKey);
@@ -152,7 +165,8 @@ export async function matchResumeAgainstJobPosting(
     },
   });
 
-  const prompt = `Du bist ein erfahrener Recruiting-Assistent. Vergleiche den folgenden Lebenslauf mit der Stellenausschreibung und bewerte, wie gut sie zueinander passen. Antworte ausschließlich auf Deutsch.
+  const responseLanguage = RESPONSE_LANGUAGE_NAMES[resume.language];
+  const prompt = `Du bist ein erfahrener Recruiting-Assistent. Vergleiche den folgenden Lebenslauf mit der Stellenausschreibung und bewerte, wie gut sie zueinander passen. Antworte ausschließlich auf ${responseLanguage} — sowohl die Fließtext-Vorschläge als auch die einzelnen Skill-/Stärken-Einträge müssen auf ${responseLanguage} formuliert sein, unabhängig davon, in welcher Sprache Lebenslauf oder Stellenausschreibung verfasst sind.
 
 LEBENSLAUF:
 ${buildResumeSummary(resume)}
@@ -169,36 +183,26 @@ ${jobPosting}`;
 
     if (error instanceof GoogleGenerativeAIFetchError) {
       if (error.status === 429) {
-        throw new ResumeMatchError(
-          "Das kostenlose Gemini-Kontingent ist für heute für die ganze App aufgebraucht (Google begrenzt das für alle Nutzer zusammen, nicht pro Person). Bitte versuch es morgen wieder — dein eigener Tages-Check bleibt dir erhalten.",
-          "app_quota_exceeded",
-          { cause: error },
-        );
+        throw new ResumeMatchError(t.errorAppQuota, "app_quota_exceeded", { cause: error });
       }
       if (error.status === 401 || error.status === 403) {
-        throw new ResumeMatchError(
-          "Der Gemini-API-Key ist ungültig oder wurde widerrufen. Bitte beim Betreiber melden.",
-          "invalid_api_key",
-          { cause: error },
-        );
+        throw new ResumeMatchError(t.errorInvalidApiKey, "invalid_api_key", { cause: error });
       }
     }
 
-    throw new ResumeMatchError("Die Anfrage an Gemini ist fehlgeschlagen. Bitte versuche es später erneut.", "request_failed", {
-      cause: error,
-    });
+    throw new ResumeMatchError(t.errorRequestFailed, "request_failed", { cause: error });
   }
 
   let parsed: unknown;
   try {
     parsed = JSON.parse(text);
   } catch {
-    throw new ResumeMatchError("Gemini hat kein gültiges Ergebnis geliefert. Bitte versuche es erneut.", "invalid_response");
+    throw new ResumeMatchError(t.errorInvalidResponseJson, "invalid_response");
   }
 
   const validated = resumeMatchResultSchema.safeParse(parsed);
   if (!validated.success) {
-    throw new ResumeMatchError("Die Antwort hatte nicht das erwartete Format. Bitte versuche es erneut.", "invalid_response");
+    throw new ResumeMatchError(t.errorInvalidResponseShape, "invalid_response");
   }
 
   return validated.data;

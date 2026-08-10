@@ -1,6 +1,7 @@
 "use server";
 
 import type { ResumeData } from "@/app/(app)/editor/types";
+import { getDictionary } from "@/app/lib/i18n/get-dictionary";
 import {
   matchResumeAgainstJobPosting,
   ResumeMatchError,
@@ -23,22 +24,44 @@ export type MatchResumeState =
   | { status: "success"; result: ResumeMatchResult };
 
 const MAX_JOB_POSTING_LENGTH = 8000;
-const DAILY_LIMIT_MESSAGE =
-  "Du hast deine tägliche Stellenabgleich-Prüfung bereits genutzt. Versuch es morgen wieder.";
 
 function todayIso(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
+// Read-only check so the editor page can show the daily-limit notice up
+// front, before the user types a job posting and hits submit only to be
+// told they're out of checks for today.
+export async function getJobMatchUsedToday(): Promise<boolean> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return false;
+
+  const { data } = await supabase
+    .from("resume_match_usage")
+    .select("user_id")
+    .eq("user_id", user.id)
+    .eq("checked_on", todayIso())
+    .maybeSingle();
+
+  return !!data;
+}
+
 export async function matchResumeToJob(resumeData: ResumeData, jobPosting: string): Promise<MatchResumeState> {
+  const dict = await getDictionary();
+  const t = dict.editor.jobMatch;
+
   const trimmed = jobPosting.trim();
   if (!trimmed) {
-    return { status: "error", error: "Bitte füge zuerst eine Stellenausschreibung ein.", code: "empty_input" };
+    return { status: "error", error: t.errorEmptyInput, code: "empty_input" };
   }
   if (trimmed.length > MAX_JOB_POSTING_LENGTH) {
     return {
       status: "error",
-      error: `Die Stellenausschreibung ist zu lang (max. ${MAX_JOB_POSTING_LENGTH} Zeichen).`,
+      error: t.errorInputTooLong.replace("{max}", String(MAX_JOB_POSTING_LENGTH)),
       code: "input_too_long",
     };
   }
@@ -49,7 +72,7 @@ export async function matchResumeToJob(resumeData: ResumeData, jobPosting: strin
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { status: "error", error: "Nicht angemeldet.", code: "not_authenticated" };
+    return { status: "error", error: dict.common.notAuthenticated, code: "not_authenticated" };
   }
 
   const today = todayIso();
@@ -64,13 +87,9 @@ export async function matchResumeToJob(resumeData: ResumeData, jobPosting: strin
 
   if (insertError) {
     if (insertError.code === "23505") {
-      return { status: "error", error: DAILY_LIMIT_MESSAGE, code: "daily_limit_reached" };
+      return { status: "error", error: t.errorDailyLimitReached, code: "daily_limit_reached" };
     }
-    return {
-      status: "error",
-      error: "Die Prüfung konnte nicht gestartet werden. Bitte versuch es erneut.",
-      code: "unexpected",
-    };
+    return { status: "error", error: t.errorStartFailed, code: "unexpected" };
   }
 
   try {
@@ -85,6 +104,6 @@ export async function matchResumeToJob(resumeData: ResumeData, jobPosting: strin
     if (error instanceof ResumeMatchError) {
       return { status: "error", error: error.message, code: error.code };
     }
-    return { status: "error", error: "Unbekannter Fehler bei der Prüfung.", code: "unexpected" };
+    return { status: "error", error: t.errorUnexpected, code: "unexpected" };
   }
 }

@@ -59,6 +59,29 @@ Die Antwort wird zusätzlich mit `zod` validiert (`resumeMatchResultSchema`)
 und der Score auf `0–100` geklemmt — das Schema zwingt das Modell zu einer
 bestimmten Form, garantiert aber nicht hundertprozentig gültige Werte.
 
+### Antwortsprache folgt der Lebenslauf-Sprache, nicht der App-UI
+
+`matchResumeAgainstJobPosting` bekommt den kompletten `resume: ResumeData`
+übergeben — `resume.language` (`"de" | "en" | "fr"`, dieselbe Einstellung
+wie im Sprach-Umschalter unter „Vorlage" im Editor) steuert direkt die
+Prompt-Instruktion:
+
+```ts
+const RESPONSE_LANGUAGE_NAMES: Record<ResumeLanguage, string> = {
+  de: "Deutsch", en: "Englisch", fr: "Französisch",
+};
+```
+
+Gemini wird angewiesen, sowohl die Fließtext-Vorschläge als auch die
+einzelnen Skill-/Stärken-Einträge in dieser Sprache zu formulieren —
+unabhängig davon, in welcher Sprache die eingefügte Stellenausschreibung
+selbst verfasst ist. Die vier Label-Überschriften im Ergebnis-Panel
+(„Passende Fähigkeiten" etc.) übersetzen entsprechend mit, über
+`MATCH_UI_STRINGS` in `app/lib/match-i18n.ts` — nur diese Labels, **nicht** der Rest des Stellenabgleich-Panels
+(Textarea-Label, Button, Fehlermeldungen zu Rate-Limits/Auth) — der bleibt
+bewusst deutsch, wie die restliche Editor-Oberfläche auch (die App-UI ist
+insgesamt nicht mehrsprachig, nur der erzeugte Lebenslauf selbst).
+
 ## Zwei getrennte Rate-Limits
 
 Das ist der Teil, der am leichtesten zu verwechseln ist — es gibt **zwei

@@ -2,31 +2,36 @@ import type { Metadata } from "next";
 
 import { SiteFooter } from "@/app/components/site-footer";
 import { SiteHeader } from "@/app/components/site-header";
+import { getDictionary } from "@/app/lib/i18n/get-dictionary";
 
 export const metadata: Metadata = {
   title: "Impressum – CVio",
 };
 
-export default function ImpressumPage() {
+export default async function ImpressumPage() {
+  const dict = await getDictionary();
+  const t = dict.legal.impressum;
+  const s = t.sections;
+
   return (
     <div className="flex flex-1 flex-col bg-paper text-ink dark:bg-paper-dark dark:text-ink-dark">
       <SiteHeader />
       <main className="flex-1">
         <section className="mx-auto max-w-2xl px-6 py-20">
           <span className="font-mono text-xs uppercase tracking-[0.2em] text-rust">
-            Rechtliches
+            {t.eyebrow}
           </span>
           <h1 className="mt-3 font-serif text-4xl font-medium tracking-tight text-ink dark:text-ink-dark">
-            Impressum
+            {t.title}
           </h1>
 
           <div className="mt-10 flex flex-col gap-8 text-ink/80 dark:text-ink-dark/80">
             <div>
               <h2 className="font-serif text-lg font-medium text-ink dark:text-ink-dark">
-                Angaben gemäß § 5 DDG
+                {s.angaben.heading}
               </h2>
               <p className="mt-2">
-                Steve Leonel Yomi Mbiakop
+                {s.angaben.body}
                 <br />
                 E-Mail:{" "}
                 <a
@@ -40,32 +45,23 @@ export default function ImpressumPage() {
 
             <div>
               <h2 className="font-serif text-lg font-medium text-ink dark:text-ink-dark">
-                Verantwortlich für den Inhalt
+                {s.verantwortlich.heading}
               </h2>
-              <p className="mt-2">Steve Leonel Yomi Mbiakop (Anschrift wie oben)</p>
+              <p className="mt-2">{s.verantwortlich.body}</p>
             </div>
 
             <div>
               <h2 className="font-serif text-lg font-medium text-ink dark:text-ink-dark">
-                Hinweis zum Angebot
+                {s.hinweis.heading}
               </h2>
-              <p className="mt-2">
-                CVio ist ein privates, nicht-kommerzielles Projekt und wird ohne Gewinnerzielungsabsicht
-                bereitgestellt. Es dient dem Erstellen und Exportieren eigener Lebensläufe im
-                Freundes- und Bekanntenkreis des Betreibers.
-              </p>
+              <p className="mt-2">{s.hinweis.body}</p>
             </div>
 
             <div>
               <h2 className="font-serif text-lg font-medium text-ink dark:text-ink-dark">
-                Haftung für Inhalte
+                {s.haftung.heading}
               </h2>
-              <p className="mt-2">
-                Die Inhalte dieser Seite wurden mit Sorgfalt erstellt. Für die Richtigkeit,
-                Vollständigkeit und Aktualität kann dennoch keine Gewähr übernommen werden. Als
-                privater Betreiber bin ich für eigene Inhalte auf diesen Seiten nach den allgemeinen
-                Gesetzen verantwortlich.
-              </p>
+              <p className="mt-2">{s.haftung.body}</p>
             </div>
           </div>
         </section>

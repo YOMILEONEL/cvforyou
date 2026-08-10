@@ -1,31 +1,5 @@
-const highlight = {
-  title: "ATS-optimierte Vorlagen",
-  description:
-    "Sauber strukturierte Layouts, die von Bewerbermanagementsystemen zuverlässig ausgelesen werden — kein verlorener Lebenslauf im Bewerber-Sieb.",
-};
-
-const features = [
-  {
-    title: "Live-Vorschau",
-    description: "Jede Änderung an deinen Daten oder deinem Design siehst du sofort im fertigen Layout.",
-  },
-  {
-    title: "Automatisches Speichern",
-    description: "Deine Eingaben werden laufend gesichert — auch bei einem Verbindungsabbruch geht nichts verloren.",
-  },
-  {
-    title: "Mehrsprachige Oberfläche",
-    description: "Nutze CVio auf Deutsch oder Englisch — weitere Sprachen können folgen.",
-  },
-  {
-    title: "Mehrere Lebensläufe",
-    description: "Lege für jede Bewerbung eine eigene Version an, ohne Daten neu eingeben zu müssen.",
-  },
-  {
-    title: "Datenschutz nach DSGVO",
-    description: "Deine Daten gehören dir: Export und Löschung deines Profils sind jederzeit möglich.",
-  },
-];
+import { RobotIcon } from "@/app/components/robot-icon";
+import { getDictionary } from "@/app/lib/i18n/get-dictionary";
 
 function CheckIcon() {
   return (
@@ -39,33 +13,47 @@ function CheckIcon() {
   );
 }
 
-export function FeaturesSection() {
+export async function FeaturesSection() {
+  const dict = await getDictionary();
+
   return (
     <section id="features" className="mx-auto max-w-6xl px-6 py-24">
       <div className="mx-auto max-w-2xl text-center">
         <span className="font-mono text-xs uppercase tracking-[0.2em] text-rust">
-          03 — Funktionen
+          {dict.features.eyebrow}
         </span>
         <h2 className="mt-3 font-serif text-3xl font-medium tracking-tight text-ink sm:text-4xl dark:text-ink-dark">
-          Alles, was du für deinen Lebenslauf brauchst
+          {dict.features.title}
         </h2>
       </div>
 
       <div className="mt-14 flex flex-col gap-6">
-        <div className="flex flex-col items-start gap-4 border border-ink bg-ink px-8 py-10 text-paper sm:flex-row sm:items-center sm:gap-8 dark:border-ink-dark dark:bg-ink-dark dark:text-paper-dark">
-          <div className="flex h-12 w-12 flex-none items-center justify-center border border-dashed border-rust text-rust">
-            <CheckIcon />
+        {dict.features.highlights.map((item, index) => (
+          <div
+            key={item.title}
+            className="flex flex-col items-start gap-4 border border-ink bg-ink px-8 py-10 text-paper sm:flex-row sm:items-center sm:gap-8 dark:border-ink-dark dark:bg-ink-dark dark:text-paper-dark"
+          >
+            <div className="flex h-12 w-12 flex-none items-center justify-center border border-dashed border-rust text-rust">
+              {index === 1 ? <RobotIcon /> : <CheckIcon />}
+            </div>
+            <div>
+              <h3 className="flex items-center gap-2 font-serif text-xl font-medium">
+                {item.title}
+                {item.badge && (
+                  <span className="rounded-full border border-dashed border-rust px-2 py-0.5 font-mono text-[10px] font-normal uppercase tracking-wide text-rust">
+                    {item.badge}
+                  </span>
+                )}
+              </h3>
+              <p className="mt-1 max-w-2xl text-sm leading-6 text-paper/75 dark:text-paper-dark/75">
+                {item.description}
+              </p>
+            </div>
           </div>
-          <div>
-            <h3 className="font-serif text-xl font-medium">{highlight.title}</h3>
-            <p className="mt-1 max-w-2xl text-sm leading-6 text-paper/75 dark:text-paper-dark/75">
-              {highlight.description}
-            </p>
-          </div>
-        </div>
+        ))}
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          {features.map((feature) => (
+          {dict.features.items.map((feature) => (
             <div
               key={feature.title}
               className="flex flex-col gap-2 border border-ink/15 p-6 dark:border-ink-dark/15"

@@ -1,3 +1,7 @@
+"use client";
+
+import { useDictionary } from "@/app/lib/i18n/dictionary-context";
+
 type RepeatableSectionProps<T extends { id: string }> = {
   items: T[];
   onChange: (items: T[]) => void;
@@ -17,6 +21,8 @@ export function RepeatableSection<T extends { id: string }>({
   renderTitle,
   renderFields,
 }: RepeatableSectionProps<T>) {
+  const { dict } = useDictionary();
+
   function updateItem(id: string, patch: Partial<T>) {
     onChange(items.map((item) => (item.id === id ? { ...item, ...patch } : item)));
   }
@@ -44,7 +50,7 @@ export function RepeatableSection<T extends { id: string }>({
               onClick={() => removeItem(item.id)}
               className="text-sm text-rust hover:underline"
             >
-              Entfernen
+              {dict.common.remove}
             </button>
           </div>
           <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">

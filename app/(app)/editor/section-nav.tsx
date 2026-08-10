@@ -3,6 +3,8 @@
 import { useState } from "react";
 
 import { initialSectionMeta, type EditorSection, type SectionId, type SectionMeta } from "@/app/(app)/editor/types";
+import { RobotIcon } from "@/app/components/robot-icon";
+import { useDictionary } from "@/app/lib/i18n/dictionary-context";
 
 type SectionNavProps = {
   sections: SectionMeta[];
@@ -20,6 +22,8 @@ export function SectionNav({
   onReorder,
 }: SectionNavProps) {
   const [dragId, setDragId] = useState<SectionId | null>(null);
+  const { dict } = useDictionary();
+  const t = dict.editor.nav;
 
   function handleDrop(targetId: SectionId) {
     if (!dragId || dragId === targetId) return;
@@ -43,7 +47,7 @@ export function SectionNav({
   }
 
   return (
-    <nav aria-label="Sektionen" className="flex flex-col gap-2">
+    <nav aria-label={t.sectionsAriaLabel} className="flex flex-col gap-2">
       <button
         type="button"
         onClick={() => onSelect("personal")}
@@ -53,9 +57,9 @@ export function SectionNav({
             : "border-ink/20 text-ink/80 hover:border-ink/50 dark:border-ink-dark/20 dark:text-ink-dark/80"
         }`}
       >
-        Persönliche Daten
+        {t.personalData}
         <span className="ml-auto font-mono text-[10px] uppercase text-current/60">
-          fix
+          {t.fixed}
         </span>
       </button>
 
@@ -68,9 +72,9 @@ export function SectionNav({
             : "border-ink/20 text-ink/80 hover:border-ink/50 dark:border-ink-dark/20 dark:text-ink-dark/80"
         }`}
       >
-        Vorlage
+        {t.design}
         <span className="ml-auto font-mono text-[10px] uppercase text-current/60">
-          fix
+          {t.fixed}
         </span>
       </button>
 
@@ -83,9 +87,10 @@ export function SectionNav({
             : "border-ink/20 text-ink/80 hover:border-ink/50 dark:border-ink-dark/20 dark:text-ink-dark/80"
         }`}
       >
-        Stellenabgleich
+        <RobotIcon className="h-4 w-4 flex-none text-rust" />
+        {t.jobMatch}
         <span className="ml-auto font-mono text-[10px] uppercase text-current/60">
-          fix
+          {t.fixed}
         </span>
       </button>
 
@@ -116,12 +121,12 @@ export function SectionNav({
               onClick={() => onSelect(section.id)}
               className="flex-1 text-left"
             >
-              {section.label}
+              {t.sectionNames[section.id]}
             </button>
             <button
               type="button"
               onClick={() => onToggleVisible(section.id)}
-              aria-label={section.visible ? "Sektion ausblenden" : "Sektion einblenden"}
+              aria-label={section.visible ? t.hideSection : t.showSection}
               className="text-current/60 hover:text-current"
             >
               {section.visible ? "◎" : "◌"}
@@ -135,7 +140,7 @@ export function SectionNav({
         onClick={resetOrder}
         className="mt-1 self-start text-xs text-ink/50 underline decoration-dashed decoration-ink/30 underline-offset-4 hover:text-ink hover:decoration-ink dark:text-ink-dark/50 dark:decoration-ink-dark/30 dark:hover:text-ink-dark"
       >
-        Standardreihenfolge wiederherstellen
+        {t.resetOrder}
       </button>
     </nav>
   );
