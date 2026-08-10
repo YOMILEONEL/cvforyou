@@ -1,11 +1,5 @@
-import type { Metadata } from "next";
+import { createResumeAndRedirect } from "@/app/lib/resumes";
 
-import { EditorClient } from "@/app/(app)/editor/editor-client";
-
-export const metadata: Metadata = {
-  title: "Editor – CVio",
-};
-
-export default function EditorPage() {
-  return <EditorClient />;
+export default async function EditorEntryPage() {
+  await createResumeAndRedirect();
 }

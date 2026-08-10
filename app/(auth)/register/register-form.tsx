@@ -1,0 +1,64 @@
+"use client";
+
+import { useActionState } from "react";
+
+import { register, type AuthState } from "@/app/lib/auth-actions";
+
+export function RegisterForm() {
+  const [state, formAction, pending] = useActionState<AuthState, FormData>(register, undefined);
+
+  return (
+    <form action={formAction} className="mt-8 flex flex-col gap-4">
+      <label className="flex flex-col gap-1.5 text-sm font-medium text-ink dark:text-ink-dark">
+        Name
+        <input
+          type="text"
+          name="name"
+          required
+          autoComplete="name"
+          placeholder="Vor- und Nachname"
+          className="border border-ink/30 bg-paper px-3 py-2 text-sm text-ink outline-none focus:border-rust dark:border-ink-dark/30 dark:bg-paper-dark dark:text-ink-dark"
+        />
+      </label>
+
+      <label className="flex flex-col gap-1.5 text-sm font-medium text-ink dark:text-ink-dark">
+        E-Mail
+        <input
+          type="email"
+          name="email"
+          required
+          autoComplete="email"
+          placeholder="du@beispiel.de"
+          className="border border-ink/30 bg-paper px-3 py-2 text-sm text-ink outline-none focus:border-rust dark:border-ink-dark/30 dark:bg-paper-dark dark:text-ink-dark"
+        />
+      </label>
+
+      <label className="flex flex-col gap-1.5 text-sm font-medium text-ink dark:text-ink-dark">
+        Passwort
+        <input
+          type="password"
+          name="password"
+          required
+          autoComplete="new-password"
+          placeholder="Mind. 8 Zeichen"
+          className="border border-ink/30 bg-paper px-3 py-2 text-sm text-ink outline-none focus:border-rust dark:border-ink-dark/30 dark:bg-paper-dark dark:text-ink-dark"
+        />
+      </label>
+
+      <label className="flex items-start gap-2 text-sm text-ink/70 dark:text-ink-dark/70">
+        <input type="checkbox" name="terms" required className="mt-0.5 h-4 w-4 border-ink/40" />
+        Ich stimme den Nutzungsbedingungen und der Datenschutzerklärung zu.
+      </label>
+
+      {state?.error && <p className="text-sm text-rust">{state.error}</p>}
+
+      <button
+        type="submit"
+        disabled={pending}
+        className="mt-2 flex h-11 items-center justify-center border border-ink bg-ink text-sm font-semibold text-paper shadow-[3px_3px_0_0_var(--color-rust)] transition-transform hover:-translate-y-0.5 hover:-translate-x-0.5 disabled:cursor-not-allowed disabled:opacity-60 dark:border-ink-dark dark:bg-ink-dark dark:text-paper-dark"
+      >
+        {pending ? "Konto wird erstellt …" : "Konto erstellen"}
+      </button>
+    </form>
+  );
+}
