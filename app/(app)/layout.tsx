@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { LanguageSwitcher } from "@/app/components/language-switcher";
 import { LogoMark } from "@/app/components/logo-mark";
-import { logout } from "@/app/lib/auth-actions";
+import { LogoutButton } from "@/app/components/logout-button";
 import { getDictionary } from "@/app/lib/i18n/get-dictionary";
 import { createClient } from "@/app/lib/supabase/server";
 
@@ -50,14 +50,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             >
               {getInitials(displayName)}
             </span>
-            <form action={logout}>
-              <button
-                type="submit"
-                className="text-sm font-medium text-ink/60 hover:text-ink dark:text-ink-dark/60 dark:hover:text-ink-dark"
-              >
-                {dict.appHeader.logout}
-              </button>
-            </form>
+            <LogoutButton />
           </div>
         </div>
       </header>

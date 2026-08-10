@@ -139,6 +139,9 @@ export const en: Dictionary = {
   appHeader: {
     newResume: "New resume",
     logout: "Log out",
+    logoutConfirmMessage: "Are you sure you want to log out?",
+    logoutCancel: "Cancel",
+    logoutConfirm: "Yes, log out",
   },
   dashboard: {
     eyebrow: "Overview",

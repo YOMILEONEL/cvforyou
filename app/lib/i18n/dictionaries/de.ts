@@ -140,6 +140,9 @@ export const de = {
   appHeader: {
     newResume: "Neuer Lebenslauf",
     logout: "Abmelden",
+    logoutConfirmMessage: "Möchtest du dich wirklich abmelden?",
+    logoutCancel: "Abbrechen",
+    logoutConfirm: "Ja, abmelden",
   },
   dashboard: {
     eyebrow: "Übersicht",
