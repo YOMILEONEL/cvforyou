@@ -1,36 +1,147 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CVio
 
-## Getting Started
+Ein privater, nicht-kommerzieller Lebenslauf-Generator für den
+Freundes- und Bekanntenkreis: Lebenslauf im Editor zusammenstellen, aus
+14 Vorlagen wählen, als PDF exportieren — und optional per KI gegen eine
+Stellenausschreibung abgleichen lassen.
 
-First, run the development server:
+Gebaut mit Next.js 16 (App Router), Supabase (Auth, Postgres, Storage) und
+der Gemini API für den KI-Stellenabgleich.
+
+## Features
+
+- **Editor** mit Live-Vorschau: persönliche Daten, Berufserfahrung,
+  Ausbildung, Fähigkeiten, Sprachen, Zertifikate, Projekte, Referenzen,
+  Freitext — Sektionen sind ein-/ausblendbar und per Drag & Drop sortierbar.
+- **14 Vorlagen** in vier Stilrichtungen (Minimalistisch, Modern, Kreativ,
+  Klassisch), inkl. einer ATS-freundlichen Vorlage ohne Foto.
+- **PDF-Export** — serverseitig gerendert (Puppeteer/Chromium), sieht exakt
+  wie die Live-Vorschau aus.
+- **KI-Stellenabgleich** (Gemini) — vergleicht den Lebenslauf mit einer
+  eingefügten Stellenausschreibung: Match-Score, fehlende Skills,
+  Verbesserungsvorschläge. Ein Check pro Nutzer und Tag.
+- **Auto-Save** im Editor (debounced), Foto-Upload direkt zu Supabase
+  Storage.
+- **Auth** über Supabase (E-Mail/Passwort), Daten pro Nutzer isoliert über
+  Row Level Security.
+
+## Tech-Stack
+
+| Bereich | Technologie |
+|---|---|
+| Framework | Next.js 16 (App Router, Server Actions, Turbopack) |
+| UI | React 19, Tailwind CSS 4 |
+| Datenbank/Auth/Storage | Supabase (Postgres + RLS, Supabase Auth, Supabase Storage) |
+| PDF-Rendering | Puppeteer (lokal) / `puppeteer-core` + `@sparticuz/chromium` (serverless) |
+| KI-Stellenabgleich | Google Gemini API (`gemini-flash-latest`) |
+| Validierung | zod |
+
+## Setup
+
+### Voraussetzungen
+
+- Node.js (siehe `package.json`/`.nvmrc`, falls vorhanden — sonst aktuelle
+  LTS-Version)
+- Ein [Supabase](https://supabase.com)-Projekt
+- Ein kostenloser [Google AI Studio](https://aistudio.google.com/apikey)
+  API-Key (für den Stellenabgleich)
+
+### 1. Abhängigkeiten installieren
+
+```bash
+npm install
+```
+
+### 2. Umgebungsvariablen
+
+```bash
+cp .env.local.example .env.local
+```
+
+Dann in `.env.local` eintragen:
+
+| Variable | Woher |
+|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase-Dashboard → Project Settings → API |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase-Dashboard → Project Settings → API |
+| `GEMINI_API_KEY` | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) (kostenloser Tier, kein Zahlungsmittel nötig) |
+
+`.env.local` ist gitignored — trag dort nie Werte in `.env.local.example`
+ein, diese Datei ist eingecheckt und dient nur als Vorlage mit
+Platzhaltern.
+
+### 3. Datenbank-Schema anlegen
+
+Den Inhalt von [`supabase/schema.sql`](supabase/schema.sql) im Supabase
+Dashboard → SQL Editor ausführen. Die Datei ist mehrfach ausführbar
+(`if not exists` / Policies werden gedroppt und neu angelegt) — sicher bei
+Schema-Updates erneut laufen zu lassen.
+
+### 4. Dev-Server starten
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+App läuft auf [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Befehl | Zweck |
+|---|---|
+| `npm run dev` | Dev-Server (Turbopack) |
+| `npm run build` | Produktions-Build |
+| `npm run start` | Produktions-Server (nach `build`) |
+| `npm run lint` | ESLint |
+| `npm run generate:previews` | Generiert die Vorlagen-Vorschaubilder (`scripts/generate-template-previews.ts`) |
 
-## Learn More
+## Projektstruktur
 
-To learn more about Next.js, take a look at the following resources:
+```
+app/
+  (app)/              Eingeloggter Bereich: Dashboard, Editor
+  (auth)/             Login, Registrierung
+  api/resumes/[id]/pdf/  Route Handler für PDF-Export
+  components/         Landingpage-Komponenten
+  lib/                Server Actions, Supabase-Clients, PDF-Rendering, Gemini-Client
+  datenschutz/, impressum/, kontakt/   Rechtliche Pflichtseiten
+supabase/
+  schema.sql          Tabellen, RLS-Policies, Storage-Bucket-Setup
+docs/                 Vertiefende Doku zu einzelnen Subsystemen (siehe unten)
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Weiterführende Dokumentation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Diese README deckt den Überblick ab. Für die Details einzelner Subsysteme:
 
-## Deploy on Vercel
+- [**Auth**](docs/auth.md) — Supabase Auth, Middleware/Session-Refresh,
+  welcher Supabase-Client wo verwendet wird, RLS als Autorisierungsschicht.
+- [**AI-Agent (Stellenabgleich)**](docs/ai-agent.md) — Gemini-Integration,
+  Structured Output, die zwei getrennten Rate-Limits (pro Nutzer vs.
+  App-weites Google-Kontingent), Fehlercodes.
+- [**API-Anfragen-Flow**](docs/api-request-flow.md) — Server Components vs.
+  Server Actions vs. der eine Route Handler, Persistenzmodell,
+  Datei-Upload-Flow.
+- [**PDF-Export**](docs/pdf-export.md) — Wie der Lebenslauf zu PDF wird,
+  der lokale/serverless Puppeteer-Split, XSS-Schutz beim HTML-Rendering.
+- [**Requirements-Engineering**](docs/requirements-lebenslauf-generator.md) —
+  die ursprüngliche Anforderungsanalyse, aus der das Projekt entstanden ist
+  (Stand: Planungsphase, nicht alle Punkte sind 1:1 umgesetzt).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deployment
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Gedacht für [Vercel](https://vercel.com) + Supabase. Beim Deployment:
+
+- Alle drei Env-Vars (`NEXT_PUBLIC_SUPABASE_URL`,
+  `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `GEMINI_API_KEY`) als Vercel-Project-Env-Vars
+  hinterlegen.
+- `supabase/schema.sql` gegen das Produktions-Supabase-Projekt ausführen
+  (separates Projekt empfohlen, nicht dasselbe wie lokal/Dev).
+- `next.config.ts` enthält bereits die nötige `outputFileTracingIncludes`-
+  Konfiguration für den serverless-Chromium-Build (siehe
+  [docs/pdf-export.md](docs/pdf-export.md)) — hier ist nichts weiter nötig.
+
+## Rechtliches
+
+Privates, nicht-kommerzielles Projekt ohne Gewinnerzielungsabsicht — siehe
+[`/impressum`](app/impressum/page.tsx) und [`/datenschutz`](app/datenschutz/page.tsx).
