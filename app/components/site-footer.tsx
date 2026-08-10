@@ -1,7 +1,9 @@
+import Link from "next/link";
+
 const footerLinks = [
-  { href: "#", label: "Impressum" },
-  { href: "#", label: "Datenschutz" },
-  { href: "#", label: "Kontakt" },
+  { href: "/impressum", label: "Impressum" },
+  { href: "/datenschutz", label: "Datenschutz" },
+  { href: "/kontakt", label: "Kontakt" },
 ];
 
 export function SiteFooter() {
@@ -13,13 +15,13 @@ export function SiteFooter() {
         </p>
         <nav className="flex items-center gap-6">
           {footerLinks.map((link) => (
-            <a
+            <Link
               key={link.label}
               href={link.href}
               className="text-sm text-ink/60 hover:text-ink dark:text-ink-dark/60 dark:hover:text-ink-dark"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
         </nav>
       </div>

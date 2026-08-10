@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
 
 import { register, type AuthState } from "@/app/lib/auth-actions";
@@ -47,7 +48,14 @@ export function RegisterForm() {
 
       <label className="flex items-start gap-2 text-sm text-ink/70 dark:text-ink-dark/70">
         <input type="checkbox" name="terms" required className="mt-0.5 h-4 w-4 border-ink/40" />
-        Ich stimme den Nutzungsbedingungen und der Datenschutzerklärung zu.
+        Ich stimme den Nutzungsbedingungen und der{" "}
+        <Link
+          href="/datenschutz"
+          className="underline decoration-dashed decoration-ink/40 underline-offset-4 hover:decoration-ink dark:decoration-ink-dark/40"
+        >
+          Datenschutzerklärung
+        </Link>{" "}
+        zu.
       </label>
 
       {state?.error && <p className="text-sm text-rust">{state.error}</p>}

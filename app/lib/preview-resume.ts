@@ -4,6 +4,7 @@ import type { ResumeData, SectionMeta } from "@/app/(app)/editor/types";
 // thumbnails (see scripts/generate-template-previews.ts) — not tied to any
 // real person or organization.
 export const previewResumeData: ResumeData = {
+  language: "de",
   personal: {
     firstName: "Max",
     lastName: "Mustermann",

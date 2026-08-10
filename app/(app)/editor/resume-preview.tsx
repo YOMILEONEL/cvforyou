@@ -1,5 +1,6 @@
+import { getSectionLabel, RESUME_UI_STRINGS } from "@/app/lib/resume-i18n";
 import { templates } from "@/app/lib/templates";
-import type { PersonalInfo, ResumeData, SectionMeta } from "@/app/(app)/editor/types";
+import type { PersonalInfo, ResumeData, ResumeLanguage, SectionMeta } from "@/app/(app)/editor/types";
 
 type ResumePreviewProps = {
   resume: ResumeData;
@@ -46,12 +47,15 @@ function PreviewSection({
   resume: ResumeData;
   dense?: boolean;
 }) {
+  const label = getSectionLabel(section.id, resume.language);
+  const ui = RESUME_UI_STRINGS[resume.language];
+
   switch (section.id) {
     case "experience": {
       if (resume.experience.length === 0) return null;
       return (
         <section>
-          <SectionHeading dense={dense}>{section.label}</SectionHeading>
+          <SectionHeading dense={dense}>{label}</SectionHeading>
           <div className="mt-2 flex flex-col gap-3">
             {resume.experience.map((item) => (
               <div key={item.id}>
@@ -78,7 +82,7 @@ function PreviewSection({
       if (resume.education.length === 0) return null;
       return (
         <section>
-          <SectionHeading dense={dense}>{section.label}</SectionHeading>
+          <SectionHeading dense={dense}>{label}</SectionHeading>
           <div className="mt-2 flex flex-col gap-3">
             {resume.education.map((item) => (
               <div key={item.id}>
@@ -92,7 +96,9 @@ function PreviewSection({
                   </p>
                 </div>
                 {item.grade && (
-                  <p className="text-xs text-ink/50 dark:text-ink-dark/50">Note: {item.grade}</p>
+                  <p className="text-xs text-ink/50 dark:text-ink-dark/50">
+                    {ui.grade}: {item.grade}
+                  </p>
                 )}
               </div>
             ))}
@@ -104,7 +110,7 @@ function PreviewSection({
       if (resume.skills.length === 0) return null;
       return (
         <section>
-          <SectionHeading dense={dense}>{section.label}</SectionHeading>
+          <SectionHeading dense={dense}>{label}</SectionHeading>
           <div className="mt-2 flex flex-wrap gap-2">
             {resume.skills.map((item) => (
               <span
@@ -123,7 +129,7 @@ function PreviewSection({
       if (resume.languages.length === 0) return null;
       return (
         <section>
-          <SectionHeading dense={dense}>{section.label}</SectionHeading>
+          <SectionHeading dense={dense}>{label}</SectionHeading>
           <div className="mt-2 flex flex-wrap gap-2">
             {resume.languages.map((item) => (
               <span
@@ -141,7 +147,7 @@ function PreviewSection({
       if (resume.certificates.length === 0) return null;
       return (
         <section>
-          <SectionHeading dense={dense}>{section.label}</SectionHeading>
+          <SectionHeading dense={dense}>{label}</SectionHeading>
           <div className="mt-2 flex flex-col gap-2">
             {resume.certificates.map((item) => (
               <div key={item.id} className="flex items-baseline justify-between gap-2">
@@ -162,7 +168,7 @@ function PreviewSection({
       if (resume.projects.length === 0) return null;
       return (
         <section>
-          <SectionHeading dense={dense}>{section.label}</SectionHeading>
+          <SectionHeading dense={dense}>{label}</SectionHeading>
           <div className="mt-2 flex flex-col gap-3">
             {resume.projects.map((item) => (
               <div key={item.id}>
@@ -181,7 +187,7 @@ function PreviewSection({
       if (resume.references.length === 0) return null;
       return (
         <section>
-          <SectionHeading dense={dense}>{section.label}</SectionHeading>
+          <SectionHeading dense={dense}>{label}</SectionHeading>
           <div className="mt-2 flex flex-col gap-2">
             {resume.references.map((item) => (
               <p key={item.id} className="text-sm text-ink/80 dark:text-ink-dark/80">
@@ -198,7 +204,7 @@ function PreviewSection({
       if (!resume.freitext.content) return null;
       return (
         <section>
-          <SectionHeading dense={dense}>{resume.freitext.title || section.label}</SectionHeading>
+          <SectionHeading dense={dense}>{resume.freitext.title || label}</SectionHeading>
           <p className="mt-2 text-sm leading-6 text-ink/75 dark:text-ink-dark/75">
             {resume.freitext.content}
           </p>
@@ -264,11 +270,12 @@ function formatGermanDate(iso: string): string {
   return `${day}.${month}.${year}`;
 }
 
-function birthLine(personal: PersonalInfo): string {
+function birthLine(personal: PersonalInfo, language: ResumeLanguage): string {
+  const ui = RESUME_UI_STRINGS[language];
   const date = personal.birthDate ? formatGermanDate(personal.birthDate) : "";
-  if (date && personal.birthPlace) return `Geboren am ${date} in ${personal.birthPlace}`;
-  if (date) return `Geboren am ${date}`;
-  if (personal.birthPlace) return `Geboren in ${personal.birthPlace}`;
+  if (date && personal.birthPlace) return `${ui.bornOn} ${date} ${ui.inConnector} ${personal.birthPlace}`;
+  if (date) return `${ui.bornOn} ${date}`;
+  if (personal.birthPlace) return `${ui.bornIn} ${personal.birthPlace}`;
   return "";
 }
 
@@ -276,17 +283,31 @@ function normalizeUrl(url: string): string {
   return /^https?:\/\//i.test(url) ? url : `https://${url}`;
 }
 
-function personalLinks(personal: PersonalInfo): { label: string; href?: string }[] {
+function personalLinks(
+  personal: PersonalInfo,
+  language: ResumeLanguage,
+): { label: string; href?: string }[] {
+  const ui = RESUME_UI_STRINGS[language];
   const items: { label: string; href?: string }[] = [];
   if (personal.linkedinUrl) items.push({ label: "LinkedIn", href: normalizeUrl(personal.linkedinUrl) });
   if (personal.githubUrl) items.push({ label: "GitHub", href: normalizeUrl(personal.githubUrl) });
   if (personal.portfolioUrl) items.push({ label: "Portfolio", href: normalizeUrl(personal.portfolioUrl) });
-  if (personal.drivingLicense) items.push({ label: `Führerschein ${personal.drivingLicense}` });
+  if (personal.drivingLicense) items.push({ label: `${ui.drivingLicense} ${personal.drivingLicense}` });
   return items;
 }
 
-function LinksLine({ personal, className, linkClassName }: { personal: PersonalInfo; className: string; linkClassName: string }) {
-  const items = personalLinks(personal);
+function LinksLine({
+  personal,
+  language,
+  className,
+  linkClassName,
+}: {
+  personal: PersonalInfo;
+  language: ResumeLanguage;
+  className: string;
+  linkClassName: string;
+}) {
+  const items = personalLinks(personal, language);
   if (items.length === 0) return null;
   return (
     <p className={className}>
@@ -317,7 +338,8 @@ function PhotoCircle({ photoUrl, size = "h-14 w-14" }: { photoUrl: string; size?
 }
 
 function MinimalistischLayout({ resume, sections }: LayoutProps) {
-  const { personal } = resume;
+  const { personal, language } = resume;
+  const ui = RESUME_UI_STRINGS[language];
   return (
     <div className="relative w-full max-w-md -rotate-1">
       <div
@@ -338,12 +360,13 @@ function MinimalistischLayout({ resume, sections }: LayoutProps) {
             </h2>
             {personal.title && <p className="text-sm text-rust">{personal.title}</p>}
             <p className="mt-2 font-mono text-xs text-ink/60 dark:text-ink-dark/60">
-              {[personal.email, personal.phone, personal.city, birthLine(personal)]
+              {[personal.email, personal.phone, personal.city, birthLine(personal, language)]
                 .filter(Boolean)
-                .join(" · ") || "E-Mail · Telefon · Ort"}
+                .join(" · ") || ui.contactPlaceholder}
             </p>
             <LinksLine
               personal={personal}
+              language={language}
               className="mt-1 font-mono text-xs text-ink/50 dark:text-ink-dark/50"
               linkClassName="text-rust hover:underline"
             />
@@ -359,24 +382,25 @@ function MinimalistischLayout({ resume, sections }: LayoutProps) {
 }
 
 function ModernLayout({ resume, sections }: LayoutProps) {
-  const { personal } = resume;
+  const { personal, language } = resume;
+  const ui = RESUME_UI_STRINGS[language];
   return (
     <div className="relative w-full max-w-md rotate-1">
       <div className="flex border border-ink bg-sheet shadow-[8px_8px_0_0_var(--color-forest)] dark:border-ink-dark/60 dark:bg-sheet-dark">
         <aside className="w-1/3 flex-none border-r border-ink/15 bg-forest/10 p-5 dark:border-ink-dark/15">
           <PhotoCircle photoUrl={personal.photoUrl} size="h-14 w-14" />
           <p className="mt-4 font-mono text-[11px] uppercase tracking-wide text-forest">
-            Kontakt
+            {ui.contactHeading}
           </p>
           <div className="mt-2 flex flex-col gap-1 font-mono text-[11px] text-ink/70 dark:text-ink-dark/70">
             <span>{personal.email || "E-Mail"}</span>
             <span>{personal.phone || "Telefon"}</span>
             <span>{personal.city || "Ort"}</span>
-            {birthLine(personal) && <span>{birthLine(personal)}</span>}
+            {birthLine(personal, language) && <span>{birthLine(personal, language)}</span>}
           </div>
-          {personalLinks(personal).length > 0 && (
+          {personalLinks(personal, language).length > 0 && (
             <div className="mt-4 flex flex-col gap-1 font-mono text-[11px] text-forest">
-              {personalLinks(personal).map((item) =>
+              {personalLinks(personal, language).map((item) =>
                 item.href ? (
                   <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" className="hover:underline">
                     {item.label}
@@ -403,7 +427,8 @@ function ModernLayout({ resume, sections }: LayoutProps) {
 }
 
 function KreativLayout({ resume, sections }: LayoutProps) {
-  const { personal } = resume;
+  const { personal, language } = resume;
+  const ui = RESUME_UI_STRINGS[language];
   return (
     <div className="relative w-full max-w-md -rotate-2">
       <div className="overflow-hidden border border-ink bg-sheet shadow-[8px_8px_0_0_var(--color-rust)] dark:border-ink-dark/60 dark:bg-sheet-dark">
@@ -420,12 +445,13 @@ function KreativLayout({ resume, sections }: LayoutProps) {
             <h2 className="font-serif text-2xl font-medium">{fullName(resume)}</h2>
             {personal.title && <p className="text-sm text-paper/80">{personal.title}</p>}
             <p className="mt-2 font-mono text-xs text-paper/70">
-              {[personal.email, personal.phone, personal.city, birthLine(personal)]
+              {[personal.email, personal.phone, personal.city, birthLine(personal, language)]
                 .filter(Boolean)
-                .join(" · ") || "E-Mail · Telefon · Ort"}
+                .join(" · ") || ui.contactPlaceholder}
             </p>
             <LinksLine
               personal={personal}
+              language={language}
               className="mt-1 font-mono text-xs text-paper/70"
               linkClassName="underline hover:text-paper"
             />
@@ -440,7 +466,8 @@ function KreativLayout({ resume, sections }: LayoutProps) {
 }
 
 function KlassischLayout({ resume, sections }: LayoutProps) {
-  const { personal } = resume;
+  const { personal, language } = resume;
+  const ui = RESUME_UI_STRINGS[language];
   return (
     <div className="relative w-full max-w-md">
       <div className="border border-ink bg-sheet p-8 shadow-[8px_8px_0_0_var(--color-ochre)] dark:border-ink-dark/60 dark:bg-sheet-dark">
@@ -450,12 +477,13 @@ function KlassischLayout({ resume, sections }: LayoutProps) {
           </h2>
           {personal.title && <p className="text-sm text-ochre">{personal.title}</p>}
           <p className="mt-2 text-xs text-ink/60 dark:text-ink-dark/60">
-            {[personal.city, personal.phone, personal.email, birthLine(personal)]
+            {[personal.city, personal.phone, personal.email, birthLine(personal, language)]
               .filter(Boolean)
-              .join(" | ") || "Ort | Telefon | E-Mail"}
+              .join(" | ") || ui.klassischContactPlaceholder}
           </p>
           <LinksLine
             personal={personal}
+            language={language}
             className="mt-1 text-xs text-ink/60 dark:text-ink-dark/60"
             linkClassName="text-ochre hover:underline"
           />

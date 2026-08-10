@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import { LanguageToggle } from "@/app/(app)/editor/language-toggle";
 import { ResumePreview } from "@/app/(app)/editor/resume-preview";
 import { SectionForm } from "@/app/(app)/editor/section-form";
 import { SectionNav } from "@/app/(app)/editor/section-nav";
@@ -10,10 +11,12 @@ import {
   SECTION_LABELS,
   type EditorSection,
   type ResumeData,
+  type ResumeLanguage,
   type SectionId,
   type SectionMeta,
 } from "@/app/(app)/editor/types";
 import { saveResume } from "@/app/lib/resume-actions";
+import { RESUME_UI_STRINGS } from "@/app/lib/resume-i18n";
 
 type EditorClientProps = {
   resumeId: string;
@@ -81,6 +84,19 @@ export function EditorClient({
     );
   }
 
+  function handleLanguageChange(nextLanguage: ResumeLanguage) {
+    // Swap the freitext heading between the two languages' defaults, but
+    // only if it still matches a default — never overwrite a custom title.
+    const currentDefault = RESUME_UI_STRINGS[resume.language].freitextDefaultTitle;
+    const nextDefault = RESUME_UI_STRINGS[nextLanguage].freitextDefaultTitle;
+    const shouldSwapTitle = resume.freitext.title === "" || resume.freitext.title === currentDefault;
+
+    updateResume({
+      language: nextLanguage,
+      freitext: shouldSwapTitle ? { ...resume.freitext, title: nextDefault } : resume.freitext,
+    });
+  }
+
   const activeLabel =
     activeSection === "personal"
       ? "Persönliche Daten"
@@ -142,7 +158,10 @@ export function EditorClient({
             </h1>
           </div>
           {activeSection === "design" ? (
-            <TemplatePicker activeTemplate={templateName} onSelect={setTemplateName} />
+            <div className="flex flex-col gap-8">
+              <LanguageToggle language={resume.language} onChange={handleLanguageChange} />
+              <TemplatePicker activeTemplate={templateName} onSelect={setTemplateName} />
+            </div>
           ) : (
             <SectionForm
               activeSection={activeSection}

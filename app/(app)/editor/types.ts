@@ -87,8 +87,15 @@ export type SectionId = ListSectionId | "freitext";
 
 export type EditorSection = SectionId | "personal" | "design";
 
+// Language the generated resume (preview + PDF) is displayed in — this
+// translates the app's own generated labels ("Berufserfahrung" -> "Work
+// Experience", "Geboren am" -> "Born on", etc.), not the user's own typed
+// content.
+export type ResumeLanguage = "de" | "en";
+
 export type ResumeData = {
   personal: PersonalInfo;
+  language: ResumeLanguage;
   experience: Experience[];
   education: Education[];
   skills: Skill[];
@@ -117,6 +124,7 @@ export const SECTION_LABELS: Record<SectionId, string> = {
 };
 
 export const initialResumeData: ResumeData = {
+  language: "de",
   personal: {
     firstName: "",
     lastName: "",
