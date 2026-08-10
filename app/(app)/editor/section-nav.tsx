@@ -74,6 +74,21 @@ export function SectionNav({
         </span>
       </button>
 
+      <button
+        type="button"
+        onClick={() => onSelect("match")}
+        className={`flex items-center gap-2 border px-3 py-2 text-left text-sm font-medium transition-colors ${
+          activeSection === "match"
+            ? "border-ink bg-ink text-paper dark:border-ink-dark dark:bg-ink-dark dark:text-paper-dark"
+            : "border-ink/20 text-ink/80 hover:border-ink/50 dark:border-ink-dark/20 dark:text-ink-dark/80"
+        }`}
+      >
+        Stellenabgleich
+        <span className="ml-auto font-mono text-[10px] uppercase text-current/60">
+          fix
+        </span>
+      </button>
+
       <div
         aria-hidden="true"
         className="my-1 h-px border-t border-dashed border-ink/20 dark:border-ink-dark/20"

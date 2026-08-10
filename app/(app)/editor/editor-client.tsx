@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import { JobMatchPanel } from "@/app/(app)/editor/job-match-panel";
 import { LanguageToggle } from "@/app/(app)/editor/language-toggle";
 import { ResumePreview } from "@/app/(app)/editor/resume-preview";
 import { SectionForm } from "@/app/(app)/editor/section-form";
@@ -102,7 +103,9 @@ export function EditorClient({
       ? "Persönliche Daten"
       : activeSection === "design"
         ? "Vorlage"
-        : SECTION_LABELS[activeSection];
+        : activeSection === "match"
+          ? "Stellenabgleich"
+          : SECTION_LABELS[activeSection];
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-6 py-10">
@@ -162,6 +165,8 @@ export function EditorClient({
               <LanguageToggle language={resume.language} onChange={handleLanguageChange} />
               <TemplatePicker activeTemplate={templateName} onSelect={setTemplateName} />
             </div>
+          ) : activeSection === "match" ? (
+            <JobMatchPanel resume={resume} />
           ) : (
             <SectionForm
               activeSection={activeSection}

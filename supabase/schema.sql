@@ -100,3 +100,35 @@ create policy "Users can delete their own resume photos"
     bucket_id = 'resume-photos'
     and (storage.foldername(name))[1] = auth.uid()::text
   );
+
+-- CVio: job-match check usage
+-- One row per user per calendar day the Gemini job-match check was used.
+-- The (user_id, checked_on) primary key is what enforces "one check per
+-- user per day" — the app inserts a row before calling Gemini and relies on
+-- the resulting unique-violation (23505) to reject a second check the same
+-- day, and deletes the row again if the Gemini call itself fails so a
+-- failed attempt doesn't burn the user's daily check.
+
+create table if not exists public.resume_match_usage (
+  user_id uuid not null references auth.users (id) on delete cascade,
+  checked_on date not null,
+  created_at timestamptz not null default now(),
+  primary key (user_id, checked_on)
+);
+
+alter table public.resume_match_usage enable row level security;
+
+drop policy if exists "Users can view their own match usage" on public.resume_match_usage;
+create policy "Users can view their own match usage"
+  on public.resume_match_usage for select
+  using (auth.uid() = user_id);
+
+drop policy if exists "Users can insert their own match usage" on public.resume_match_usage;
+create policy "Users can insert their own match usage"
+  on public.resume_match_usage for insert
+  with check (auth.uid() = user_id);
+
+drop policy if exists "Users can delete their own match usage" on public.resume_match_usage;
+create policy "Users can delete their own match usage"
+  on public.resume_match_usage for delete
+  using (auth.uid() = user_id);
