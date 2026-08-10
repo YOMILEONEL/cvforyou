@@ -2,7 +2,7 @@
 
 Ein privater, nicht-kommerzieller Lebenslauf-Generator für den
 Freundes- und Bekanntenkreis: Lebenslauf im Editor zusammenstellen, aus
-14 Vorlagen wählen, als PDF exportieren — und optional per KI gegen eine
+14 Vorlagen wählen, als PDF exportieren und optional per KI gegen eine
 Stellenausschreibung abgleichen lassen.
 
 Gebaut mit Next.js 16 (App Router), Supabase (Auth, Postgres, Storage) und
@@ -12,14 +12,14 @@ der Gemini API für den KI-Stellenabgleich.
 
 - **Editor** mit Live-Vorschau: persönliche Daten, Berufserfahrung,
   Ausbildung, Fähigkeiten, Sprachen, Zertifikate, Projekte, Referenzen,
-  Freitext — Sektionen sind ein-/ausblendbar und per Drag & Drop sortierbar.
+  Freitext. Sektionen sind ein-/ausblendbar und per Drag & Drop sortierbar.
 - **14 Vorlagen** in vier Stilrichtungen (Minimalistisch, Modern, Kreativ,
   Klassisch), inkl. einer ATS-freundlichen Vorlage ohne Foto.
-- **PDF-Export** — serverseitig gerendert (Puppeteer/Chromium), sieht exakt
+- **PDF-Export**: serverseitig gerendert (Puppeteer/Chromium), sieht exakt
   wie die Live-Vorschau aus.
-- **KI-Stellenabgleich** (Gemini) — vergleicht den Lebenslauf mit einer
-  eingefügten Stellenausschreibung: Match-Score, fehlende Skills,
-  Verbesserungsvorschläge. Ein Check pro Nutzer und Tag.
+- **KI-Stellenabgleich** (Gemini): vergleicht den Lebenslauf mit einer
+  eingefügten Stellenausschreibung und liefert Match-Score, fehlende
+  Skills und Verbesserungsvorschläge. Ein Check pro Nutzer und Tag.
 - **Auto-Save** im Editor (debounced), Foto-Upload direkt zu Supabase
   Storage.
 - **Auth** über Supabase (E-Mail/Passwort), Daten pro Nutzer isoliert über
@@ -40,7 +40,7 @@ der Gemini API für den KI-Stellenabgleich.
 
 ### Voraussetzungen
 
-- Node.js (siehe `package.json`/`.nvmrc`, falls vorhanden — sonst aktuelle
+- Node.js (siehe `package.json`/`.nvmrc`, falls vorhanden, sonst aktuelle
   LTS-Version)
 - Ein [Supabase](https://supabase.com)-Projekt
 - Ein kostenloser [Google AI Studio](https://aistudio.google.com/apikey)
@@ -66,16 +66,16 @@ Dann in `.env.local` eintragen:
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase-Dashboard → Project Settings → API |
 | `GEMINI_API_KEY` | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) (kostenloser Tier, kein Zahlungsmittel nötig) |
 
-`.env.local` ist gitignored — trag dort nie Werte in `.env.local.example`
-ein, diese Datei ist eingecheckt und dient nur als Vorlage mit
-Platzhaltern.
+`.env.local` ist gitignored. In `.env.local.example` sollten daher nie
+echte Werte landen: diese Datei ist eingecheckt und dient nur als Vorlage
+mit Platzhaltern.
 
 ### 3. Datenbank-Schema anlegen
 
 Den Inhalt von [`supabase/schema.sql`](supabase/schema.sql) im Supabase
 Dashboard → SQL Editor ausführen. Die Datei ist mehrfach ausführbar
-(`if not exists` / Policies werden gedroppt und neu angelegt) — sicher bei
-Schema-Updates erneut laufen zu lassen.
+(`if not exists` / Policies werden gedroppt und neu angelegt), lässt sich
+also bei Schema-Updates gefahrlos erneut ausführen.
 
 ### 4. Dev-Server starten
 
@@ -114,17 +114,17 @@ docs/                 Vertiefende Doku zu einzelnen Subsystemen (siehe unten)
 
 Diese README deckt den Überblick ab. Für die Details einzelner Subsysteme:
 
-- [**Auth**](docs/auth.md) — Supabase Auth, Middleware/Session-Refresh,
+- [**Auth**](docs/auth.md): Supabase Auth, Middleware/Session-Refresh,
   welcher Supabase-Client wo verwendet wird, RLS als Autorisierungsschicht.
-- [**AI-Agent (Stellenabgleich)**](docs/ai-agent.md) — Gemini-Integration,
+- [**AI-Agent (Stellenabgleich)**](docs/ai-agent.md): Gemini-Integration,
   Structured Output, die zwei getrennten Rate-Limits (pro Nutzer vs.
   App-weites Google-Kontingent), Fehlercodes.
-- [**API-Anfragen-Flow**](docs/api-request-flow.md) — Server Components vs.
+- [**API-Anfragen-Flow**](docs/api-request-flow.md): Server Components vs.
   Server Actions vs. der eine Route Handler, Persistenzmodell,
   Datei-Upload-Flow.
-- [**PDF-Export**](docs/pdf-export.md) — Wie der Lebenslauf zu PDF wird,
+- [**PDF-Export**](docs/pdf-export.md): wie der Lebenslauf zu PDF wird,
   der lokale/serverless Puppeteer-Split, XSS-Schutz beim HTML-Rendering.
-- [**Requirements-Engineering**](docs/requirements-lebenslauf-generator.md) —
+- [**Requirements-Engineering**](docs/requirements-lebenslauf-generator.md):
   die ursprüngliche Anforderungsanalyse, aus der das Projekt entstanden ist
   (Stand: Planungsphase, nicht alle Punkte sind 1:1 umgesetzt).
 
@@ -139,9 +139,10 @@ Gedacht für [Vercel](https://vercel.com) + Supabase. Beim Deployment:
   (separates Projekt empfohlen, nicht dasselbe wie lokal/Dev).
 - `next.config.ts` enthält bereits die nötige `outputFileTracingIncludes`-
   Konfiguration für den serverless-Chromium-Build (siehe
-  [docs/pdf-export.md](docs/pdf-export.md)) — hier ist nichts weiter nötig.
+  [docs/pdf-export.md](docs/pdf-export.md)). Hier ist nichts weiter nötig.
 
 ## Rechtliches
 
-Privates, nicht-kommerzielles Projekt ohne Gewinnerzielungsabsicht — siehe
-[`/impressum`](app/impressum/page.tsx) und [`/datenschutz`](app/datenschutz/page.tsx).
+Privates, nicht-kommerzielles Projekt ohne Gewinnerzielungsabsicht. Details
+siehe [`/impressum`](app/impressum/page.tsx) und
+[`/datenschutz`](app/datenschutz/page.tsx).

@@ -13,7 +13,7 @@ export async function setLocale(locale: Locale): Promise<void> {
     sameSite: "lax",
   });
   // Every Server Component reads the locale via the same request-memoized
-  // getDictionary() — revalidating the whole tree is what makes the switch
+  // getDictionary(); revalidating the whole tree is what makes the switch
   // apply everywhere in one action, no per-page refresh logic needed.
   revalidatePath("/", "layout");
 }

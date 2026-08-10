@@ -17,7 +17,7 @@ export function DictionaryProvider({
   return <DictionaryContext.Provider value={{ dict, locale }}>{children}</DictionaryContext.Provider>;
 }
 
-// Client Components can't call the server-only getDictionary() directly —
+// Client Components can't call the server-only getDictionary() directly;
 // this hook is how they reach the dictionary that a Server Component
 // ancestor (the root layout) already fetched once per request.
 export function useDictionary(): DictionaryContextValue {

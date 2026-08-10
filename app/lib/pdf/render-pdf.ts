@@ -1,6 +1,6 @@
 import "server-only";
 
-// Full `puppeteer` bundles its own Chromium download (~700 MB locally) —
+// Full `puppeteer` bundles its own Chromium download (~700 MB locally),
 // fine for local dev, but far too large for a Vercel serverless function.
 // In production we use `puppeteer-core` with `@sparticuz/chromium`, a
 // Chromium build compressed specifically to fit serverless size limits.
@@ -26,7 +26,7 @@ async function launchBrowser(): Promise<MinimalBrowser> {
     ]);
 
     // @sparticuz/chromium ships `headless_shell`, which only supports the
-    // "old" headless mode — must be passed explicitly, since puppeteer-core
+    // "old" headless mode, must be passed explicitly, since puppeteer-core
     // defaults to the new headless mode (unsupported by headless_shell) as
     // of Puppeteer v22+.
     return puppeteerCore.launch({

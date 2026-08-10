@@ -12,7 +12,7 @@ export type { Dictionary } from "@/app/lib/i18n/dictionary-type";
 
 const dictionaries = { de, en, fr };
 
-// cache() memoizes per request — every Server Component on the tree can
+// cache() memoizes per request: every Server Component on the tree can
 // call getLocale()/getDictionary() directly without prop-drilling, and the
 // cookie is only read once per request.
 export const getLocale = cache(async (): Promise<Locale> => {

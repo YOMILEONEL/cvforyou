@@ -195,7 +195,7 @@ function PreviewSection({
             {resume.references.map((item) => (
               <p key={item.id} className="text-sm text-ink/80 dark:text-ink-dark/80">
                 {item.name || "Name"}
-                {item.role && ` — ${item.role}`}
+                {item.role && `, ${item.role}`}
                 {item.contact && ` · ${item.contact}`}
               </p>
             ))}

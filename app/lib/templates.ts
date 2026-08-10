@@ -13,7 +13,7 @@ export const styleAccent: Record<TemplateStyle, string> = {
   Klassisch: "bg-ochre",
 };
 
-// Templates using the "Klassisch" style never render a photo — a dense,
+// Templates using the "Klassisch" style never render a photo, just a dense,
 // ATS-friendly single-column format. All other styles support an optional
 // photo (uploaded to Supabase Storage) in addition to the text content.
 export const templates: Template[] = [

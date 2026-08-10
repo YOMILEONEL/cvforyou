@@ -92,7 +92,7 @@ export function EditorClient({
 
   function handleLanguageChange(nextLanguage: ResumeLanguage) {
     // Swap the freitext heading between the two languages' defaults, but
-    // only if it still matches a default — never overwrite a custom title.
+    // only if it still matches a default; never overwrite a custom title.
     const currentDefault = RESUME_UI_STRINGS[resume.language].freitextDefaultTitle;
     const nextDefault = RESUME_UI_STRINGS[nextLanguage].freitextDefaultTitle;
     const shouldSwapTitle = resume.freitext.title === "" || resume.freitext.title === currentDefault;

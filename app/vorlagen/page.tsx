@@ -7,7 +7,7 @@ import { TemplateGallery } from "@/app/vorlagen/template-gallery";
 
 export const metadata: Metadata = {
   title: "Vorlagen – CVforYou",
-  description: "Alle CVforYou-Lebenslaufvorlagen: minimalistisch, modern oder kreativ — ATS-optimiert und frei anpassbar.",
+  description: "Alle CVforYou-Lebenslaufvorlagen: minimalistisch, modern oder kreativ, ATS-optimiert und frei anpassbar.",
 };
 
 export default async function VorlagenPage() {

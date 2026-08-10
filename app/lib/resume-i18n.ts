@@ -2,7 +2,7 @@ import type { ResumeLanguage, SectionId } from "@/app/(app)/editor/types";
 
 // Labels the app generates itself for the resume preview/PDF. Deliberately
 // does not touch the user's own typed content (job descriptions, freitext
-// body, etc.) — only the structural connector text around it.
+// body, etc.), only the structural connector text around it.
 
 export const RESUME_SECTION_LABELS: Record<ResumeLanguage, Record<SectionId, string>> = {
   de: {

@@ -14,7 +14,7 @@ export function LogoutButton() {
   function handleConfirm() {
     startTransition(() => {
       // logout() redirects server-side (Next.js throws a special redirect
-      // signal internally) — nothing else to do with its result here.
+      // signal internally); nothing else to do with its result here.
       logout();
     });
   }

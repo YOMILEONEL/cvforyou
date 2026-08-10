@@ -19,14 +19,14 @@ export const fr: Dictionary = {
     titleHighlight: "fait main",
     titleSuffix: "en quelques minutes.",
     subtitle:
-      "Choisis un modèle, saisis tes données, ajuste le design — CVforYou te montre instantanément à quoi ressemble ton CV final et l'exporte prêt à imprimer en PDF.",
+      "Choisis un modèle, saisis tes données, ajuste le design : CVforYou te montre instantanément à quoi ressemble ton CV final et l'exporte prêt à imprimer en PDF.",
     ctaPrimary: "Créer mon CV maintenant",
     ctaSecondary: "Voir les modèles →",
     badgeAts: "Vérifié ATS",
     badgeTime: "⏱ prêt en 5 min.",
   },
   templatesSection: {
-    eyebrow: "01 — Modèles",
+    eyebrow: "01 · Modèles",
     title: "Des modèles qui convainquent",
     subtitle:
       "Tous les modèles sont optimisés pour les systèmes de suivi des candidatures (ATS) et personnalisables en couleur, police et mise en page.",
@@ -35,42 +35,42 @@ export const fr: Dictionary = {
     badges: { Beliebt: "Populaire", Neu: "Nouveau" },
   },
   howItWorks: {
-    eyebrow: "02 — Comment ça marche",
+    eyebrow: "02 · Comment ça marche",
     title: "4 étapes pour un CV terminé",
     steps: [
-      { title: "Choisir un modèle", description: "Opte pour l'un des nombreux designs — minimaliste, moderne ou créatif." },
+      { title: "Choisir un modèle", description: "Opte pour l'un des nombreux designs : minimaliste, moderne ou créatif." },
       { title: "Saisir tes données", description: "Renseigne expérience professionnelle, formation, compétences et plus dans un formulaire guidé." },
       { title: "Personnaliser le design", description: "Ajuste les couleurs, la police et la mise en page, et vois les changements en direct dans l'aperçu." },
       { title: "Télécharger le PDF", description: "Exporte ton CV terminé prêt à imprimer en PDF et postule directement." },
     ],
   },
   features: {
-    eyebrow: "03 — Fonctionnalités",
+    eyebrow: "03 · Fonctionnalités",
     title: "Tout ce dont tu as besoin pour ton CV",
     highlights: [
       {
         title: "Modèles optimisés ATS",
         description:
-          "Des mises en page bien structurées, lues de façon fiable par les systèmes de suivi des candidatures — aucun CV perdu dans le tri automatique.",
+          "Des mises en page bien structurées, lues de façon fiable par les systèmes de suivi des candidatures, pour qu'aucun CV ne se perde dans le tri automatique.",
         badge: undefined,
       },
       {
         title: "Comparaison avec une offre d'emploi par IA",
         description:
-          "Colle le texte d'une offre d'emploi et fais évaluer ton CV par IA : score de correspondance, compétences manquantes et suggestions d'amélioration concrètes — directement dans l'éditeur, gratuit une fois par jour.",
+          "Colle le texte d'une offre d'emploi et fais évaluer ton CV par IA : score de correspondance, compétences manquantes et suggestions d'amélioration concrètes, directement dans l'éditeur et gratuit une fois par jour.",
         badge: "Nouveau",
       },
     ],
     items: [
       { title: "Aperçu en direct", description: "Chaque modification de tes données ou de ton design apparaît immédiatement dans la mise en page finale." },
-      { title: "Enregistrement automatique", description: "Tes saisies sont enregistrées en continu — rien n'est perdu même en cas de coupure de connexion." },
-      { title: "Interface multilingue", description: "Utilise CVforYou en allemand, anglais ou français — ton CV lui-même peut aussi être généré dans l'une de ces langues." },
+      { title: "Enregistrement automatique", description: "Tes saisies sont enregistrées en continu, rien n'est perdu même en cas de coupure de connexion." },
+      { title: "Interface multilingue", description: "Utilise CVforYou en allemand, anglais ou français, ton CV lui-même peut aussi être généré dans l'une de ces langues." },
       { title: "Plusieurs CV", description: "Crée une version distincte pour chaque candidature sans ressaisir tes données." },
       { title: "Confidentialité conforme au RGPD", description: "Tes données t'appartiennent : export et suppression de ton profil possibles à tout moment." },
     ],
   },
   cta: {
-    eyebrow: "04 — Démarrer",
+    eyebrow: "04 · Démarrer",
     title: "Prêt pour ton nouveau CV ?",
     subtitle: "Démarre gratuitement, choisis un modèle et télécharge ton PDF terminé en quelques minutes.",
     cta: "Créer mon CV maintenant",
@@ -87,7 +87,7 @@ export const fr: Dictionary = {
       title: "Connexion",
       subtitle: "Connecte-toi pour continuer à travailler sur tes CV.",
       registeredNotice:
-        "Compte créé. Si ce projet nécessite une confirmation par e-mail, vérifie ta boîte de réception — tu pourras ensuite te connecter ici.",
+        "Compte créé. Si ce projet nécessite une confirmation par e-mail, vérifie ta boîte de réception, puis connecte-toi ici.",
       emailLabel: "E-mail",
       emailPlaceholder: "toi@exemple.fr",
       passwordLabel: "Mot de passe",
@@ -147,7 +147,7 @@ export const fr: Dictionary = {
     eyebrow: "Aperçu",
     title: "Mes CV",
     newResume: "+ Nouveau CV",
-    empty: "Pas encore de CV — crée le premier avec « + Nouveau CV ».",
+    empty: "Pas encore de CV. Crée le premier avec « + Nouveau CV ».",
     edit: "Modifier",
     delete: "Supprimer",
     createNew: "Créer un nouveau CV",
@@ -283,7 +283,7 @@ export const fr: Dictionary = {
     },
     design: {
       templatePickerIntro:
-        "Change de modèle à tout moment — tes données sont conservées, seule la mise en page de l'aperçu change.",
+        "Change de modèle à tout moment : tes données sont conservées, seule la mise en page de l'aperçu change.",
       active: "actif",
       styleNames: {
         Minimalistisch: "Minimaliste",
@@ -321,7 +321,7 @@ export const fr: Dictionary = {
       errorUnexpected: "Erreur inconnue pendant la vérification.",
       errorMissingApiKey: "GEMINI_API_KEY n'est pas configurée sur le serveur.",
       errorAppQuota:
-        "Le quota Gemini gratuit est épuisé pour aujourd'hui pour toute l'application (Google limite cela pour l'ensemble des utilisateurs, pas par personne). Réessaie demain — ta propre vérification quotidienne t'est conservée.",
+        "Le quota Gemini gratuit est épuisé pour aujourd'hui pour toute l'application (Google limite cela pour l'ensemble des utilisateurs, pas par personne). Réessaie demain, ta propre vérification quotidienne t'est conservée.",
       errorInvalidApiKey: "La clé API Gemini est invalide ou a été révoquée. Merci de contacter l'administrateur du site.",
       errorRequestFailed: "La requête vers Gemini a échoué. Merci de réessayer plus tard.",
       errorInvalidResponseJson: "Gemini n'a pas renvoyé de résultat valide. Merci de réessayer.",
@@ -330,7 +330,7 @@ export const fr: Dictionary = {
     emptyPreview: "Tes saisies apparaîtront ici en direct dès que tu renseigneras des données à gauche.",
     jobMatchTip: {
       message:
-        "Le saviez-tu ? Tu peux comparer ton CV à une offre d'emploi une fois par jour, gratuitement — il te suffit de cliquer sur",
+        "Le saviez-tu ? Tu peux comparer ton CV à une offre d'emploi une fois par jour, gratuitement, il te suffit de cliquer sur",
       dismiss: "Okay",
     },
   },
@@ -366,7 +366,7 @@ export const fr: Dictionary = {
         },
         hosting: {
           heading: "Hébergement et prestataires utilisés",
-          body: "CVforYou est hébergé via Vercel. La base de données, l'authentification et le stockage des photos téléchargées passent par Supabase. La fonction optionnelle de comparaison d'offres par IA utilise l'API Google Gemini — à cette occasion, les données de CV que tu saisis et l'offre d'emploi collée sont transmises à Google. Ces prestataires peuvent aussi traiter des données en dehors de l'UE ; le cas échéant, ils mettent en place des garanties appropriées (par ex. clauses contractuelles types de l'UE).",
+          body: "CVforYou est hébergé via Vercel. La base de données, l'authentification et le stockage des photos téléchargées passent par Supabase. La fonction optionnelle de comparaison d'offres par IA utilise l'API Google Gemini : à cette occasion, les données de CV que tu saisis et l'offre d'emploi collée sont transmises à Google. Ces prestataires peuvent aussi traiter des données en dehors de l'UE ; le cas échéant, ils mettent en place des garanties appropriées (par ex. clauses contractuelles types de l'UE).",
         },
         speicherdauer: {
           heading: "Durée de conservation",

@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      # CI only type-checks/lints/builds — it never launches a browser,
+      # CI only type-checks/lints/builds, it never launches a browser,
       # so skip Puppeteer's ~700 MB Chromium download entirely. The build
       # doesn't need real Supabase credentials: every route that touches
       # Supabase uses request-time APIs (cookies/auth), so Next.js marks
@@ -27,7 +27,7 @@ jobs:
       - run: npm ci
 
       # LayoutProps/PageProps are ambient types Next.js generates into
-      # .next/types — they don't exist yet on a fresh checkout, so `tsc`
+      # .next/types, they don't exist yet on a fresh checkout, so `tsc`
       # would fail before ever seeing real errors without this step.
       - name: Generate route types
         run: npx next typegen

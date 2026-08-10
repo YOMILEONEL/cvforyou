@@ -60,7 +60,7 @@ export function JobMatchPanel({ resume, usedToday }: JobMatchPanelProps) {
   };
 
   // Show the daily-limit notice immediately if the server already told us
-  // (via the page load) that today's check is used — no need to make the
+  // (via the page load) that today's check is used, no need to make the
   // user paste a job posting and hit submit just to find that out. Once a
   // real attempt returns a different error, that error takes over.
   const notice =

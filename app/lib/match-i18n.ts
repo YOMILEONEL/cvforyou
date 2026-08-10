@@ -1,7 +1,7 @@
 import type { ResumeLanguage } from "@/app/(app)/editor/types";
 
 // Labels for the job-match result card. Only the labels framing the AI's
-// own (language-dependent) answer are translated here — the rest of the
+// own (language-dependent) answer are translated here; the rest of the
 // job-match panel (textarea, button, error messages) stays in the app's
 // German UI on purpose, same boundary as the rest of the editor chrome.
 

@@ -1,4 +1,4 @@
-// Friendly robot face — marks anything related to the AI job-match feature
+// Friendly robot face, marks anything related to the AI job-match feature
 // so it reads as "AI-powered" at a glance (nav item, landing-page card,
 // panel intro, onboarding tip).
 export function RobotIcon({ className = "h-6 w-6" }: { className?: string }) {

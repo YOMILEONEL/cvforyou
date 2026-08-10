@@ -3,7 +3,7 @@
 import type { ResumeLanguage } from "@/app/(app)/editor/types";
 import { useDictionary } from "@/app/lib/i18n/dictionary-context";
 
-// Each language's own name for itself — shown as-is regardless of platform
+// Each language's own name for itself, shown as-is regardless of platform
 // UI language, same convention as any language picker (a "Deutsch" option
 // doesn't become "German" just because the app is in English).
 const OPTIONS: { value: ResumeLanguage; label: string }[] = [

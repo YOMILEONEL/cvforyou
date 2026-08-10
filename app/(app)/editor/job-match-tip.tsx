@@ -9,7 +9,7 @@ type JobMatchTipProps = {
   onOpenJobMatch: () => void;
 };
 
-// Onboarding tip pointing at "Stellenabgleich" — shows every time the
+// Onboarding tip pointing at "Stellenabgleich", shows every time the
 // editor is opened (by design, not persisted). Dismissing it only hides it
 // for the current page view; it's back next time this component mounts.
 export function JobMatchTip({ onOpenJobMatch }: JobMatchTipProps) {

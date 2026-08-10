@@ -87,7 +87,7 @@ export type SectionId = ListSectionId | "freitext";
 
 export type EditorSection = SectionId | "personal" | "design" | "match";
 
-// Language the generated resume (preview + PDF) is displayed in — this
+// Language the generated resume (preview + PDF) is displayed in; this
 // translates the app's own generated labels ("Berufserfahrung" -> "Work
 // Experience", "Geboren am" -> "Born on", etc.), not the user's own typed
 // content.

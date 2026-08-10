@@ -175,7 +175,7 @@ function renderSection(section: SectionMeta, resume: ResumeData, dense: boolean)
       const items = resume.references
         .map(
           (item) =>
-            `<p class="entry-small">${escapeHtml(item.name || "Name")}${item.role ? ` — ${escapeHtml(item.role)}` : ""}${item.contact ? ` · ${escapeHtml(item.contact)}` : ""}</p>`,
+            `<p class="entry-small">${escapeHtml(item.name || "Name")}${item.role ? `, ${escapeHtml(item.role)}` : ""}${item.contact ? ` · ${escapeHtml(item.contact)}` : ""}</p>`,
         )
         .join("");
       return `<section class="block">${heading(label, dense)}${items}</section>`;

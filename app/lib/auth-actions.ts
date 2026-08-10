@@ -70,7 +70,7 @@ export async function register(_prevState: AuthState, formData: FormData): Promi
   }
 
   // If e-mail confirmation is enabled in the Supabase project, signUp
-  // succeeds but returns no session yet — send the user to login instead.
+  // succeeds but returns no session yet, send the user to login instead.
   if (data.session) {
     redirect("/dashboard");
   }

@@ -19,14 +19,14 @@ export const en: Dictionary = {
     titleHighlight: "handcrafted",
     titleSuffix: "in minutes.",
     subtitle:
-      "Pick a template, enter your details, adjust the design — CVforYou shows you instantly what your finished resume looks like, and exports it print-ready as a PDF.",
+      "Pick a template, enter your details, adjust the design: CVforYou shows you instantly what your finished resume looks like, and exports it print-ready as a PDF.",
     ctaPrimary: "Create your resume now",
     ctaSecondary: "Browse templates →",
     badgeAts: "ATS checked",
     badgeTime: "⏱ done in 5 min.",
   },
   templatesSection: {
-    eyebrow: "01 — Templates",
+    eyebrow: "01 · Templates",
     title: "Templates that stand out",
     subtitle:
       "Every template is optimized for applicant tracking systems (ATS) and can be customized in color, font, and layout.",
@@ -35,42 +35,42 @@ export const en: Dictionary = {
     badges: { Beliebt: "Popular", Neu: "New" },
   },
   howItWorks: {
-    eyebrow: "02 — How it works",
+    eyebrow: "02 · How it works",
     title: "4 steps to your finished resume",
     steps: [
-      { title: "Choose a template", description: "Pick from several designs — minimalist, modern, or creative." },
+      { title: "Choose a template", description: "Pick from several designs: minimalist, modern, or creative." },
       { title: "Enter your details", description: "Fill in work experience, education, skills, and more in a guided form." },
       { title: "Customize the design", description: "Adjust colors, fonts, and layout and see the changes live in the preview." },
       { title: "Download the PDF", description: "Export your finished resume print-ready as a PDF and apply right away." },
     ],
   },
   features: {
-    eyebrow: "03 — Features",
+    eyebrow: "03 · Features",
     title: "Everything you need for your resume",
     highlights: [
       {
         title: "ATS-optimized templates",
         description:
-          "Cleanly structured layouts that applicant tracking systems can reliably parse — no resume lost in the screening sieve.",
+          "Cleanly structured layouts that applicant tracking systems can reliably parse, so your resume doesn't get lost in the screening sieve.",
         badge: undefined,
       },
       {
         title: "AI job match",
         description:
-          "Paste a job posting and have your resume evaluated by AI: match score, missing skills, and concrete improvement suggestions — right in the editor, free once a day.",
+          "Paste a job posting and have your resume evaluated by AI: match score, missing skills, and concrete improvement suggestions, right in the editor and free once a day.",
         badge: "New",
       },
     ],
     items: [
       { title: "Live preview", description: "Every change to your data or design shows up instantly in the finished layout." },
-      { title: "Auto-save", description: "Your input is saved continuously — nothing is lost even if the connection drops." },
-      { title: "Multilingual interface", description: "Use CVforYou in German, English, or French — your resume itself can also be generated in any of these languages." },
+      { title: "Auto-save", description: "Your input is saved continuously, nothing is lost even if the connection drops." },
+      { title: "Multilingual interface", description: "Use CVforYou in German, English, or French, your resume itself can also be generated in any of these languages." },
       { title: "Multiple resumes", description: "Create a separate version for each application without re-entering your data." },
       { title: "GDPR-compliant privacy", description: "Your data belongs to you: exporting and deleting your profile is possible at any time." },
     ],
   },
   cta: {
-    eyebrow: "04 — Get started",
+    eyebrow: "04 · Get started",
     title: "Ready for your new resume?",
     subtitle: "Start for free, pick a template, and download your finished PDF in minutes.",
     cta: "Create your resume now",
@@ -87,7 +87,7 @@ export const en: Dictionary = {
       title: "Log in",
       subtitle: "Log in to keep working on your resumes.",
       registeredNotice:
-        "Account created. If this project requires email confirmation, check your inbox — then you can log in here.",
+        "Account created. If this project requires email confirmation, check your inbox, then log in here.",
       emailLabel: "Email",
       emailPlaceholder: "you@example.com",
       passwordLabel: "Password",
@@ -147,7 +147,7 @@ export const en: Dictionary = {
     eyebrow: "Overview",
     title: "My resumes",
     newResume: "+ New resume",
-    empty: "No resumes yet — create your first one with “+ New resume”.",
+    empty: "No resumes yet. Create your first one with “+ New resume”.",
     edit: "Edit",
     delete: "Delete",
     createNew: "Create a new resume",
@@ -283,7 +283,7 @@ export const en: Dictionary = {
     },
     design: {
       templatePickerIntro:
-        "Switch templates anytime — your data stays intact, only the preview layout changes.",
+        "Switch templates anytime: your data stays intact, only the preview layout changes.",
       active: "active",
       styleNames: {
         Minimalistisch: "Minimalist",
@@ -321,7 +321,7 @@ export const en: Dictionary = {
       errorUnexpected: "Unknown error during the check.",
       errorMissingApiKey: "GEMINI_API_KEY is not configured on the server.",
       errorAppQuota:
-        "The free Gemini quota is used up for the whole app today (Google limits this across all users combined, not per person). Please try again tomorrow — your own daily check is preserved.",
+        "The free Gemini quota is used up for the whole app today (Google limits this across all users combined, not per person). Please try again tomorrow, your own daily check is preserved.",
       errorInvalidApiKey: "The Gemini API key is invalid or has been revoked. Please contact the site operator.",
       errorRequestFailed: "The request to Gemini failed. Please try again later.",
       errorInvalidResponseJson: "Gemini did not return a valid result. Please try again.",
@@ -330,7 +330,7 @@ export const en: Dictionary = {
     emptyPreview: "Your entries will appear here live as soon as you fill in data on the left.",
     jobMatchTip: {
       message:
-        "Did you know? You can match your resume against a job posting once a day, for free — just click",
+        "Did you know? You can match your resume against a job posting once a day, for free, just click",
       dismiss: "Okay",
     },
   },
@@ -366,7 +366,7 @@ export const en: Dictionary = {
         },
         hosting: {
           heading: "Hosting and service providers",
-          body: "CVforYou is hosted via Vercel. The database, authentication, and storage for uploaded photos run via Supabase. The optional AI job-match feature uses the Google Gemini API — for this, the resume data you enter and the pasted job posting are sent to Google. These providers may also process data outside the EU; in that case, the providers put appropriate safeguards in place (e.g. EU standard contractual clauses).",
+          body: "CVforYou is hosted via Vercel. The database, authentication, and storage for uploaded photos run via Supabase. The optional AI job-match feature uses the Google Gemini API: for this, the resume data you enter and the pasted job posting are sent to Google. These providers may also process data outside the EU; in that case, the providers put appropriate safeguards in place (e.g. EU standard contractual clauses).",
         },
         speicherdauer: {
           heading: "Retention period",

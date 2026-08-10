@@ -1,11 +1,11 @@
--- CVio: resumes table
+-- CVforYou: resumes table
 -- Safe to run multiple times in the Supabase Dashboard -> SQL Editor for
 -- this project (tables/indexes use IF NOT EXISTS, policies/triggers are
 -- dropped and recreated).
 --
 -- Stores each resume as JSON that mirrors the client-side ResumeData /
 -- SectionMeta[] shape (see app/(app)/editor/types.ts). A single JSONB
--- column per resume is deliberately simpler than one table per section —
+-- column per resume is deliberately simpler than one table per section:
 -- this app has no cross-resume reporting needs (private, non-commercial),
 -- so normalizing experiences/educations/etc. into their own tables would
 -- add schema surface without a real benefit yet.
@@ -101,10 +101,10 @@ create policy "Users can delete their own resume photos"
     and (storage.foldername(name))[1] = auth.uid()::text
   );
 
--- CVio: job-match check usage
+-- CVforYou: job-match check usage
 -- One row per user per calendar day the Gemini job-match check was used.
 -- The (user_id, checked_on) primary key is what enforces "one check per
--- user per day" — the app inserts a row before calling Gemini and relies on
+-- user per day": the app inserts a row before calling Gemini and relies on
 -- the resulting unique-violation (23505) to reject a second check the same
 -- day, and deletes the row again if the Gemini call itself fails so a
 -- failed attempt doesn't burn the user's daily check.

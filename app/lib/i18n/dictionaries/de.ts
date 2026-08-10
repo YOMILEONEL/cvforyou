@@ -1,4 +1,4 @@
-// Canonical dictionary shape — en.ts and fr.ts are typed against
+// Canonical dictionary shape: en.ts and fr.ts are typed against
 // `typeof de`, so a missing key fails `tsc`, same safety net as
 // Record<ResumeLanguage, ...> elsewhere in the codebase.
 export const de = {
@@ -20,14 +20,14 @@ export const de = {
     titleHighlight: "handgemacht",
     titleSuffix: "in wenigen Minuten.",
     subtitle:
-      "Vorlage wählen, Daten eingeben, Design anpassen — CVforYou zeigt dir sofort, wie dein fertiger Lebenslauf aussieht, und exportiert ihn druckfertig als PDF.",
+      "Vorlage wählen, Daten eingeben, Design anpassen: CVforYou zeigt dir sofort, wie dein fertiger Lebenslauf aussieht, und exportiert ihn druckfertig als PDF.",
     ctaPrimary: "Jetzt Lebenslauf erstellen",
     ctaSecondary: "Vorlagen ansehen →",
     badgeAts: "ATS geprüft",
     badgeTime: "⏱ fertig in 5 Min.",
   },
   templatesSection: {
-    eyebrow: "01 — Vorlagen",
+    eyebrow: "01 · Vorlagen",
     title: "Vorlagen, die überzeugen",
     subtitle:
       "Alle Vorlagen sind für Bewerbermanagementsysteme (ATS) optimiert und lassen sich in Farbe, Schrift und Layout anpassen.",
@@ -36,42 +36,42 @@ export const de = {
     badges: { Beliebt: "Beliebt", Neu: "Neu" },
   },
   howItWorks: {
-    eyebrow: "02 — So funktioniert's",
+    eyebrow: "02 · So funktioniert's",
     title: "In 4 Schritten zum fertigen Lebenslauf",
     steps: [
-      { title: "Vorlage wählen", description: "Entscheide dich für eine von mehreren Designs — minimalistisch, modern oder kreativ." },
+      { title: "Vorlage wählen", description: "Entscheide dich für eine von mehreren Designs: minimalistisch, modern oder kreativ." },
       { title: "Daten eingeben", description: "Fülle Berufserfahrung, Ausbildung, Skills und mehr in einem geführten Formular aus." },
       { title: "Design anpassen", description: "Passe Farben, Schriftart und Layout an und sieh die Änderungen live in der Vorschau." },
       { title: "PDF herunterladen", description: "Exportiere deinen fertigen Lebenslauf druckreif als PDF und bewirb dich direkt." },
     ],
   },
   features: {
-    eyebrow: "03 — Funktionen",
+    eyebrow: "03 · Funktionen",
     title: "Alles, was du für deinen Lebenslauf brauchst",
     highlights: [
       {
         title: "ATS-optimierte Vorlagen",
         description:
-          "Sauber strukturierte Layouts, die von Bewerbermanagementsystemen zuverlässig ausgelesen werden — kein verlorener Lebenslauf im Bewerber-Sieb.",
+          "Sauber strukturierte Layouts, die von Bewerbermanagementsystemen zuverlässig ausgelesen werden, damit dein Lebenslauf nicht im Bewerber-Sieb verloren geht.",
         badge: undefined as string | undefined,
       },
       {
         title: "KI-Stellenabgleich",
         description:
-          "Füge den Text einer Stellenausschreibung ein und lass deinen Lebenslauf per KI bewerten: Match-Score, fehlende Fähigkeiten und konkrete Verbesserungsvorschläge — direkt im Editor, einmal täglich kostenlos.",
+          "Füge den Text einer Stellenausschreibung ein und lass deinen Lebenslauf per KI bewerten: Match-Score, fehlende Fähigkeiten und konkrete Verbesserungsvorschläge, direkt im Editor und einmal täglich kostenlos.",
         badge: "Neu" as string | undefined,
       },
     ],
     items: [
       { title: "Live-Vorschau", description: "Jede Änderung an deinen Daten oder deinem Design siehst du sofort im fertigen Layout." },
-      { title: "Automatisches Speichern", description: "Deine Eingaben werden laufend gesichert — auch bei einem Verbindungsabbruch geht nichts verloren." },
-      { title: "Mehrsprachige Oberfläche", description: "Nutze CVforYou auf Deutsch, Englisch oder Französisch — auch dein Lebenslauf kann in einer dieser Sprachen erzeugt werden." },
+      { title: "Automatisches Speichern", description: "Deine Eingaben werden laufend gesichert, auch bei einem Verbindungsabbruch geht nichts verloren." },
+      { title: "Mehrsprachige Oberfläche", description: "Nutze CVforYou auf Deutsch, Englisch oder Französisch, auch dein Lebenslauf kann in einer dieser Sprachen erzeugt werden." },
       { title: "Mehrere Lebensläufe", description: "Lege für jede Bewerbung eine eigene Version an, ohne Daten neu eingeben zu müssen." },
       { title: "Datenschutz nach DSGVO", description: "Deine Daten gehören dir: Export und Löschung deines Profils sind jederzeit möglich." },
     ],
   },
   cta: {
-    eyebrow: "04 — Loslegen",
+    eyebrow: "04 · Loslegen",
     title: "Bereit für deinen neuen Lebenslauf?",
     subtitle: "Kostenlos starten, Vorlage wählen und in wenigen Minuten dein fertiges PDF herunterladen.",
     cta: "Jetzt Lebenslauf erstellen",
@@ -88,7 +88,7 @@ export const de = {
       title: "Anmelden",
       subtitle: "Melde dich an, um an deinen Lebensläufen weiterzuarbeiten.",
       registeredNotice:
-        "Konto erstellt. Falls dein Projekt eine E-Mail-Bestätigung verlangt, prüfe dein Postfach — anschließend kannst du dich hier anmelden.",
+        "Konto erstellt. Falls dein Projekt eine E-Mail-Bestätigung verlangt, prüfe dein Postfach und melde dich anschließend hier an.",
       emailLabel: "E-Mail",
       emailPlaceholder: "du@beispiel.de",
       passwordLabel: "Passwort",
@@ -148,7 +148,7 @@ export const de = {
     eyebrow: "Übersicht",
     title: "Meine Lebensläufe",
     newResume: "+ Neuer Lebenslauf",
-    empty: "Noch keine Lebensläufe — leg mit „+ Neuer Lebenslauf“ deinen ersten an.",
+    empty: "Noch keine Lebensläufe. Leg mit „+ Neuer Lebenslauf“ deinen ersten an.",
     edit: "Bearbeiten",
     delete: "Löschen",
     createNew: "Neuen Lebenslauf erstellen",
@@ -284,7 +284,7 @@ export const de = {
     },
     design: {
       templatePickerIntro:
-        "Wechsle jederzeit die Vorlage — deine Daten bleiben erhalten, nur das Layout der Vorschau ändert sich.",
+        "Wechsle jederzeit die Vorlage: deine Daten bleiben erhalten, nur das Layout der Vorschau ändert sich.",
       active: "aktiv",
       styleNames: {
         Minimalistisch: "Minimalistisch",
@@ -322,7 +322,7 @@ export const de = {
       errorUnexpected: "Unbekannter Fehler bei der Prüfung.",
       errorMissingApiKey: "GEMINI_API_KEY ist auf dem Server nicht konfiguriert.",
       errorAppQuota:
-        "Das kostenlose Gemini-Kontingent ist für heute für die ganze App aufgebraucht (Google begrenzt das für alle Nutzer zusammen, nicht pro Person). Bitte versuch es morgen wieder — dein eigener Tages-Check bleibt dir erhalten.",
+        "Das kostenlose Gemini-Kontingent ist für heute für die ganze App aufgebraucht (Google begrenzt das für alle Nutzer zusammen, nicht pro Person). Bitte versuch es morgen wieder, dein eigener Tages-Check bleibt dir erhalten.",
       errorInvalidApiKey: "Der Gemini-API-Key ist ungültig oder wurde widerrufen. Bitte beim Betreiber melden.",
       errorRequestFailed: "Die Anfrage an Gemini ist fehlgeschlagen. Bitte versuche es später erneut.",
       errorInvalidResponseJson: "Gemini hat kein gültiges Ergebnis geliefert. Bitte versuche es erneut.",
@@ -331,7 +331,7 @@ export const de = {
     emptyPreview: "Deine Eingaben erscheinen hier live, sobald du links Daten einträgst.",
     jobMatchTip: {
       message:
-        "Wusstest du schon? Du kannst deinen Lebenslauf einmal täglich kostenlos gegen eine Stellenausschreibung abgleichen lassen — klick dazu einfach auf",
+        "Wusstest du schon? Du kannst deinen Lebenslauf einmal täglich kostenlos gegen eine Stellenausschreibung abgleichen lassen, klick dazu einfach auf",
       dismiss: "Okay",
     },
   },
@@ -367,7 +367,7 @@ export const de = {
         },
         hosting: {
           heading: "Hosting und eingesetzte Dienstleister",
-          body: "CVforYou wird über Vercel gehostet. Datenbank, Authentifizierung und der Speicher für hochgeladene Fotos laufen über Supabase. Für den optionalen KI-Stellenabgleich wird die Google Gemini API genutzt — dabei werden die von dir eingegebenen Lebenslauf-Daten und die eingefügte Stellenausschreibung an Google übermittelt. Diese Anbieter können Daten auch außerhalb der EU verarbeiten; in diesem Fall stellen die Anbieter geeignete Garantien (z. B. EU-Standardvertragsklauseln) bereit.",
+          body: "CVforYou wird über Vercel gehostet. Datenbank, Authentifizierung und der Speicher für hochgeladene Fotos laufen über Supabase. Für den optionalen KI-Stellenabgleich wird die Google Gemini API genutzt: dabei werden die von dir eingegebenen Lebenslauf-Daten und die eingefügte Stellenausschreibung an Google übermittelt. Diese Anbieter können Daten auch außerhalb der EU verarbeiten; in diesem Fall stellen die Anbieter geeignete Garantien (z. B. EU-Standardvertragsklauseln) bereit.",
         },
         speicherdauer: {
           heading: "Speicherdauer",

@@ -1,4 +1,4 @@
-// Platform UI language — independent from ResumeLanguage
+// Platform UI language, independent from ResumeLanguage
 // (app/(app)/editor/types.ts), which controls the language of the
 // generated resume document itself, not the app chrome around it. A user
 // can browse the app in English while writing a French resume.

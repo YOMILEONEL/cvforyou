@@ -6,7 +6,7 @@ import { z } from "zod";
 import type { ResumeData, ResumeLanguage } from "@/app/(app)/editor/types";
 import { getDictionary } from "@/app/lib/i18n/get-dictionary";
 
-// Name Gemini can reliably act on in its own instruction — not the resume's
+// Name Gemini can reliably act on in its own instruction, not the resume's
 // UI label ("Français"), an actual language name for the "respond in X"
 // instruction.
 const RESPONSE_LANGUAGE_NAMES: Record<ResumeLanguage, string> = {
@@ -26,7 +26,7 @@ export type ResumeMatchResult = {
 // "app_quota_exceeded" is distinct from the per-user daily-check limit
 // (that one lives in match-actions.ts): this is Google's free-tier quota,
 // shared across every user of the app on one API key/project (currently
-// 20 requests/day for the Flash models — see the AI Studio rate-limit
+// 20 requests/day for the Flash models (see the AI Studio rate-limit
 // dashboard, Google doesn't publish a stable number in docs).
 export type ResumeMatchErrorCode =
   | "missing_api_key"
@@ -45,13 +45,13 @@ export class ResumeMatchError extends Error {
 }
 
 // "gemini-flash-latest" is Google's maintained alias for the current
-// recommended Flash model — pinning a dated model name (e.g.
+// recommended Flash model. Pinning a dated model name (e.g.
 // "gemini-2.5-flash") breaks without warning once Google phases it out for
 // new API keys, which is what happened here.
 const MODEL_NAME = "gemini-flash-latest";
 
-// Clamp/round rather than reject on a slightly out-of-spec score (e.g. 102)
-// — the schema constrains the model but doesn't guarantee it.
+// Clamp/round rather than reject on a slightly out-of-spec score (e.g. 102):
+// the schema constrains the model but doesn't guarantee it.
 const resumeMatchResultSchema = z.object({
   score: z
     .number()
@@ -166,7 +166,7 @@ export async function matchResumeAgainstJobPosting(
   });
 
   const responseLanguage = RESPONSE_LANGUAGE_NAMES[resume.language];
-  const prompt = `Du bist ein erfahrener Recruiting-Assistent. Vergleiche den folgenden Lebenslauf mit der Stellenausschreibung und bewerte, wie gut sie zueinander passen. Antworte ausschließlich auf ${responseLanguage} — sowohl die Fließtext-Vorschläge als auch die einzelnen Skill-/Stärken-Einträge müssen auf ${responseLanguage} formuliert sein, unabhängig davon, in welcher Sprache Lebenslauf oder Stellenausschreibung verfasst sind.
+  const prompt = `Du bist ein erfahrener Recruiting-Assistent. Vergleiche den folgenden Lebenslauf mit der Stellenausschreibung und bewerte, wie gut sie zueinander passen. Antworte ausschließlich auf ${responseLanguage}. Sowohl die Fließtext-Vorschläge als auch die einzelnen Skill-/Stärken-Einträge müssen auf ${responseLanguage} formuliert sein, unabhängig davon, in welcher Sprache Lebenslauf oder Stellenausschreibung verfasst sind.
 
 LEBENSLAUF:
 ${buildResumeSummary(resume)}

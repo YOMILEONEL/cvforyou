@@ -26,7 +26,7 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  // Do not run any logic between createServerClient and getUser() —
+  // Do not run any logic between createServerClient and getUser():
   // it revalidates the token and keeps client/server session state in sync.
   const {
     data: { user },
