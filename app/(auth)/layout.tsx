@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { LogoMark } from "@/app/components/logo-mark";
+
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-1 flex-col bg-paper text-ink dark:bg-paper-dark dark:text-ink-dark">
@@ -9,12 +11,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             href="/"
             className="flex items-center gap-2 font-serif text-xl font-semibold tracking-tight text-ink dark:text-ink-dark"
           >
-            <span
-              aria-hidden="true"
-              className="flex h-6 w-6 rotate-[-8deg] items-center justify-center rounded-full border border-dashed border-rust text-[10px] font-mono text-rust"
-            >
-              ✓
-            </span>
+            <LogoMark className="h-6 w-6 text-rust" />
             CVio
           </Link>
         </div>

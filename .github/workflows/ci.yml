@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      # CI only type-checks/lints/builds — it never launches a browser,
+      # so skip Puppeteer's ~700 MB Chromium download entirely. The build
+      # doesn't need real Supabase credentials: every route that touches
+      # Supabase uses request-time APIs (cookies/auth), so Next.js marks
+      # them dynamic and never calls Supabase during the build itself.
+      PUPPETEER_SKIP_DOWNLOAD: "true"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build

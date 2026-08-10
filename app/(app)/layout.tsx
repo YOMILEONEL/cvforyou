@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { LogoMark } from "@/app/components/logo-mark";
 import { logout } from "@/app/lib/auth-actions";
 import { createClient } from "@/app/lib/supabase/server";
 
@@ -31,12 +32,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             href="/dashboard"
             className="flex items-center gap-2 font-serif text-xl font-semibold tracking-tight text-ink dark:text-ink-dark"
           >
-            <span
-              aria-hidden="true"
-              className="flex h-6 w-6 rotate-[-8deg] items-center justify-center rounded-full border border-dashed border-rust text-[10px] font-mono text-rust"
-            >
-              ✓
-            </span>
+            <LogoMark className="h-6 w-6 text-rust" />
             CVio
           </Link>
 
