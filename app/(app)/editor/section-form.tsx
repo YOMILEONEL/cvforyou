@@ -70,6 +70,45 @@ export function SectionForm({ activeSection, resume, resumeId, onChange }: Secti
         <Field label="E-Mail" type="email" value={p.email} onChange={(e) => update({ email: e.target.value })} />
         <Field label="Telefon" value={p.phone} onChange={(e) => update({ phone: e.target.value })} />
         <Field label="Ort" value={p.city} onChange={(e) => update({ city: e.target.value })} />
+
+        <p className="sm:col-span-2 mt-2 font-mono text-xs uppercase tracking-wide text-ink/50 dark:text-ink-dark/50">
+          Zusätzliche Angaben (optional)
+        </p>
+        <Field
+          label="Führerschein"
+          placeholder="z. B. Klasse B"
+          value={p.drivingLicense}
+          onChange={(e) => update({ drivingLicense: e.target.value })}
+        />
+        <Field
+          label="LinkedIn"
+          placeholder="linkedin.com/in/..."
+          value={p.linkedinUrl}
+          onChange={(e) => update({ linkedinUrl: e.target.value })}
+        />
+        <Field
+          label="GitHub"
+          placeholder="github.com/..."
+          value={p.githubUrl}
+          onChange={(e) => update({ githubUrl: e.target.value })}
+        />
+        <Field
+          label="Portfolio"
+          placeholder="deine-website.de"
+          value={p.portfolioUrl}
+          onChange={(e) => update({ portfolioUrl: e.target.value })}
+        />
+        <Field
+          label="Geburtsort"
+          value={p.birthPlace}
+          onChange={(e) => update({ birthPlace: e.target.value })}
+        />
+        <Field
+          label="Geburtsdatum"
+          type="date"
+          value={p.birthDate}
+          onChange={(e) => update({ birthDate: e.target.value })}
+        />
       </div>
     );
   }

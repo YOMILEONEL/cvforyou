@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import type { EditorSection, SectionId, SectionMeta } from "@/app/(app)/editor/types";
+import { initialSectionMeta, type EditorSection, type SectionId, type SectionMeta } from "@/app/(app)/editor/types";
 
 type SectionNavProps = {
   sections: SectionMeta[];
@@ -30,6 +30,16 @@ export function SectionNav({
     next.splice(toIndex, 0, moved);
     onReorder(next);
     setDragId(null);
+  }
+
+  function resetOrder() {
+    const visibilityById = new Map(sections.map((section) => [section.id, section.visible]));
+    onReorder(
+      initialSectionMeta.map((section) => ({
+        ...section,
+        visible: visibilityById.get(section.id) ?? section.visible,
+      })),
+    );
   }
 
   return (
@@ -104,6 +114,14 @@ export function SectionNav({
           </li>
         ))}
       </ul>
+
+      <button
+        type="button"
+        onClick={resetOrder}
+        className="mt-1 self-start text-xs text-ink/50 underline decoration-dashed decoration-ink/30 underline-offset-4 hover:text-ink hover:decoration-ink dark:text-ink-dark/50 dark:decoration-ink-dark/30 dark:hover:text-ink-dark"
+      >
+        Standardreihenfolge wiederherstellen
+      </button>
     </nav>
   );
 }

@@ -1,4 +1,4 @@
-import type { ResumeData, SectionMeta } from "@/app/(app)/editor/types";
+import type { PersonalInfo, ResumeData, SectionMeta } from "@/app/(app)/editor/types";
 import { escapeHtml } from "@/app/lib/pdf/escape-html";
 import { templates } from "@/app/lib/templates";
 
@@ -14,10 +14,48 @@ function fullName(resume: ResumeData): string {
   );
 }
 
-function contactLine(resume: ResumeData, separator = " · "): string {
-  return [resume.personal.email, resume.personal.phone, resume.personal.city]
+function formatGermanDate(iso: string): string {
+  const [year, month, day] = iso.split("-");
+  if (!year || !month || !day) return iso;
+  return `${day}.${month}.${year}`;
+}
+
+function birthLine(personal: PersonalInfo): string {
+  const date = personal.birthDate ? formatGermanDate(personal.birthDate) : "";
+  if (date && personal.birthPlace) return `Geboren am ${date} in ${personal.birthPlace}`;
+  if (date) return `Geboren am ${date}`;
+  if (personal.birthPlace) return `Geboren in ${personal.birthPlace}`;
+  return "";
+}
+
+function contactLine(resume: ResumeData): string {
+  return [resume.personal.email, resume.personal.phone, resume.personal.city, birthLine(resume.personal)]
     .filter(Boolean)
-    .join(separator);
+    .join(" · ");
+}
+
+function normalizeUrl(url: string): string {
+  return /^https?:\/\//i.test(url) ? url : `https://${url}`;
+}
+
+function personalLinks(personal: PersonalInfo): { label: string; href?: string }[] {
+  const items: { label: string; href?: string }[] = [];
+  if (personal.linkedinUrl) items.push({ label: "LinkedIn", href: normalizeUrl(personal.linkedinUrl) });
+  if (personal.githubUrl) items.push({ label: "GitHub", href: normalizeUrl(personal.githubUrl) });
+  if (personal.portfolioUrl) items.push({ label: "Portfolio", href: normalizeUrl(personal.portfolioUrl) });
+  if (personal.drivingLicense) items.push({ label: `Führerschein ${escapeHtml(personal.drivingLicense)}` });
+  return items;
+}
+
+function linksLineHtml(personal: PersonalInfo, style: string): string {
+  const items = personalLinks(personal);
+  if (items.length === 0) return "";
+  const parts = items.map((item) =>
+    item.href
+      ? `<a href="${escapeHtml(item.href)}" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: underline;">${escapeHtml(item.label)}</a>`
+      : item.label,
+  );
+  return `<p style="${style}">${parts.join(" · ")}</p>`;
 }
 
 function heading(label: string, dense: boolean): string {
@@ -187,6 +225,7 @@ function minimalistischHtml(resume: ResumeData, sections: SectionMeta[]): string
           <h2 class="name">${escapeHtml(fullName(resume))}</h2>
           ${resume.personal.title ? `<p class="title">${escapeHtml(resume.personal.title)}</p>` : ""}
           <p class="contact">${escapeHtml(contactLine(resume)) || "E-Mail · Telefon · Ort"}</p>
+          ${linksLineHtml(resume.personal, "font-size: 11px; color: #b9512e; margin: 4px 0 0;")}
         </div>
       </header>
       ${renderSectionsHtml(resume, sections)}
@@ -206,6 +245,8 @@ function modernHtml(resume: ResumeData, sections: SectionMeta[]): string {
         <p style="font-size: 11px; margin: 0;">${escapeHtml(resume.personal.email) || "E-Mail"}</p>
         <p style="font-size: 11px; margin: 4px 0 0;">${escapeHtml(resume.personal.phone) || "Telefon"}</p>
         <p style="font-size: 11px; margin: 4px 0 0;">${escapeHtml(resume.personal.city) || "Ort"}</p>
+        ${birthLine(resume.personal) ? `<p style="font-size: 11px; margin: 4px 0 0;">${escapeHtml(birthLine(resume.personal))}</p>` : ""}
+        ${linksLineHtml(resume.personal, "font-size: 11px; color: #2e5d4e; margin-top: 12px;")}
       </aside>
       <div style="flex: 1; padding: 18mm 14mm;">
         <h2 class="name">${escapeHtml(fullName(resume))}</h2>
@@ -228,6 +269,7 @@ function kreativHtml(resume: ResumeData, sections: SectionMeta[]): string {
           <h2 class="name" style="color: #fffdf7;">${escapeHtml(fullName(resume))}</h2>
           ${resume.personal.title ? `<p class="title" style="color: rgba(255,253,247,0.85);">${escapeHtml(resume.personal.title)}</p>` : ""}
           <p class="contact" style="color: rgba(255,253,247,0.75);">${escapeHtml(contactLine(resume)) || "E-Mail · Telefon · Ort"}</p>
+          ${linksLineHtml(resume.personal, "font-size: 11px; color: rgba(255,253,247,0.75); margin: 4px 0 0; text-decoration-color: rgba(255,253,247,0.75);")}
         </div>
       </header>
       <div style="padding: 16mm;">
@@ -238,12 +280,16 @@ function kreativHtml(resume: ResumeData, sections: SectionMeta[]): string {
 }
 
 function klassischHtml(resume: ResumeData, sections: SectionMeta[]): string {
+  const line = [resume.personal.city, resume.personal.phone, resume.personal.email, birthLine(resume.personal)]
+    .filter(Boolean)
+    .join(" | ");
   return `
     <div class="page" style="padding: 18mm 16mm;">
       <header style="text-align: center; border-bottom: 1px solid rgba(33,28,21,0.2); padding-bottom: 14px; margin-bottom: 20px;">
         <h2 class="name" style="font-weight: 700;">${escapeHtml(fullName(resume))}</h2>
         ${resume.personal.title ? `<p class="title" style="color: #c68a2e;">${escapeHtml(resume.personal.title)}</p>` : ""}
-        <p class="contact" style="margin-top: 6px;">${escapeHtml(contactLine(resume, " | ")) || "Ort | Telefon | E-Mail"}</p>
+        <p class="contact" style="margin-top: 6px;">${escapeHtml(line) || "Ort | Telefon | E-Mail"}</p>
+        ${linksLineHtml(resume.personal, "font-size: 11px; color: #211c15; margin: 4px 0 0;")}
       </header>
       ${renderSectionsHtml(resume, sections, true)}
     </div>

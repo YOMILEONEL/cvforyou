@@ -33,7 +33,35 @@ async function requireUser() {
     redirect("/login");
   }
 
-  return { supabase, userId: user.id };
+  return { supabase, userId: user.id, user };
+}
+
+// Resumes saved before a field was added to PersonalInfo/ResumeData won't
+// have it in their stored JSON. Merging onto the current defaults keeps
+// every field defined (never `undefined`), so inputs never flip from
+// uncontrolled to controlled once the user starts typing.
+function mergeResumeData(stored: Partial<ResumeData> | null | undefined): ResumeData {
+  return {
+    ...initialResumeData,
+    ...stored,
+    personal: { ...initialResumeData.personal, ...stored?.personal },
+    freitext: { ...initialResumeData.freitext, ...stored?.freitext },
+  };
+}
+
+function buildInitialResumeData(user: { email?: string; user_metadata?: Record<string, unknown> }): ResumeData {
+  const fullName = typeof user.user_metadata?.full_name === "string" ? user.user_metadata.full_name.trim() : "";
+  const [firstName, ...rest] = fullName ? fullName.split(/\s+/) : [""];
+
+  return {
+    ...initialResumeData,
+    personal: {
+      ...initialResumeData.personal,
+      firstName,
+      lastName: rest.join(" "),
+      email: user.email ?? "",
+    },
+  };
 }
 
 export async function listResumes(): Promise<ResumeSummary[]> {
@@ -74,12 +102,12 @@ export async function getResume(id: string): Promise<ResumeRecord> {
     templateName: data.template_name as string,
     updatedAt: data.updated_at as string,
     sectionMeta: (data.section_meta as SectionMeta[] | null) ?? initialSectionMeta,
-    data: (data.data as ResumeData | null) ?? initialResumeData,
+    data: mergeResumeData(data.data as Partial<ResumeData> | null),
   };
 }
 
 export async function createResumeAndRedirect(templateName?: string): Promise<never> {
-  const { supabase, userId } = await requireUser();
+  const { supabase, userId, user } = await requireUser();
 
   const resolvedTemplate = templates.some((t) => t.name === templateName)
     ? (templateName as string)
@@ -92,7 +120,7 @@ export async function createResumeAndRedirect(templateName?: string): Promise<ne
       title: "Neuer Lebenslauf",
       template_name: resolvedTemplate,
       section_meta: initialSectionMeta,
-      data: initialResumeData,
+      data: buildInitialResumeData(user),
     })
     .select("id")
     .single();

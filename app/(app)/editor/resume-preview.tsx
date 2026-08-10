@@ -1,5 +1,5 @@
 import { templates } from "@/app/lib/templates";
-import type { ResumeData, SectionMeta } from "@/app/(app)/editor/types";
+import type { PersonalInfo, ResumeData, SectionMeta } from "@/app/(app)/editor/types";
 
 type ResumePreviewProps = {
   resume: ResumeData;
@@ -258,6 +258,54 @@ function fullName(resume: ResumeData): string {
   );
 }
 
+function formatGermanDate(iso: string): string {
+  const [year, month, day] = iso.split("-");
+  if (!year || !month || !day) return iso;
+  return `${day}.${month}.${year}`;
+}
+
+function birthLine(personal: PersonalInfo): string {
+  const date = personal.birthDate ? formatGermanDate(personal.birthDate) : "";
+  if (date && personal.birthPlace) return `Geboren am ${date} in ${personal.birthPlace}`;
+  if (date) return `Geboren am ${date}`;
+  if (personal.birthPlace) return `Geboren in ${personal.birthPlace}`;
+  return "";
+}
+
+function normalizeUrl(url: string): string {
+  return /^https?:\/\//i.test(url) ? url : `https://${url}`;
+}
+
+function personalLinks(personal: PersonalInfo): { label: string; href?: string }[] {
+  const items: { label: string; href?: string }[] = [];
+  if (personal.linkedinUrl) items.push({ label: "LinkedIn", href: normalizeUrl(personal.linkedinUrl) });
+  if (personal.githubUrl) items.push({ label: "GitHub", href: normalizeUrl(personal.githubUrl) });
+  if (personal.portfolioUrl) items.push({ label: "Portfolio", href: normalizeUrl(personal.portfolioUrl) });
+  if (personal.drivingLicense) items.push({ label: `Führerschein ${personal.drivingLicense}` });
+  return items;
+}
+
+function LinksLine({ personal, className, linkClassName }: { personal: PersonalInfo; className: string; linkClassName: string }) {
+  const items = personalLinks(personal);
+  if (items.length === 0) return null;
+  return (
+    <p className={className}>
+      {items.map((item, index) => (
+        <span key={item.label}>
+          {index > 0 && " · "}
+          {item.href ? (
+            <a href={item.href} target="_blank" rel="noopener noreferrer" className={linkClassName}>
+              {item.label}
+            </a>
+          ) : (
+            item.label
+          )}
+        </span>
+      ))}
+    </p>
+  );
+}
+
 function PhotoCircle({ photoUrl, size = "h-14 w-14" }: { photoUrl: string; size?: string }) {
   if (!photoUrl) {
     return (
@@ -290,9 +338,15 @@ function MinimalistischLayout({ resume, sections }: LayoutProps) {
             </h2>
             {personal.title && <p className="text-sm text-rust">{personal.title}</p>}
             <p className="mt-2 font-mono text-xs text-ink/60 dark:text-ink-dark/60">
-              {[personal.email, personal.phone, personal.city].filter(Boolean).join(" · ") ||
-                "E-Mail · Telefon · Ort"}
+              {[personal.email, personal.phone, personal.city, birthLine(personal)]
+                .filter(Boolean)
+                .join(" · ") || "E-Mail · Telefon · Ort"}
             </p>
+            <LinksLine
+              personal={personal}
+              className="mt-1 font-mono text-xs text-ink/50 dark:text-ink-dark/50"
+              linkClassName="text-rust hover:underline"
+            />
           </div>
         </header>
 
@@ -318,7 +372,21 @@ function ModernLayout({ resume, sections }: LayoutProps) {
             <span>{personal.email || "E-Mail"}</span>
             <span>{personal.phone || "Telefon"}</span>
             <span>{personal.city || "Ort"}</span>
+            {birthLine(personal) && <span>{birthLine(personal)}</span>}
           </div>
+          {personalLinks(personal).length > 0 && (
+            <div className="mt-4 flex flex-col gap-1 font-mono text-[11px] text-forest">
+              {personalLinks(personal).map((item) =>
+                item.href ? (
+                  <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                    {item.label}
+                  </a>
+                ) : (
+                  <span key={item.label}>{item.label}</span>
+                ),
+              )}
+            </div>
+          )}
         </aside>
         <div className="flex-1 p-6">
           <h2 className="font-serif text-2xl font-medium text-ink dark:text-ink-dark">
@@ -352,9 +420,15 @@ function KreativLayout({ resume, sections }: LayoutProps) {
             <h2 className="font-serif text-2xl font-medium">{fullName(resume)}</h2>
             {personal.title && <p className="text-sm text-paper/80">{personal.title}</p>}
             <p className="mt-2 font-mono text-xs text-paper/70">
-              {[personal.email, personal.phone, personal.city].filter(Boolean).join(" · ") ||
-                "E-Mail · Telefon · Ort"}
+              {[personal.email, personal.phone, personal.city, birthLine(personal)]
+                .filter(Boolean)
+                .join(" · ") || "E-Mail · Telefon · Ort"}
             </p>
+            <LinksLine
+              personal={personal}
+              className="mt-1 font-mono text-xs text-paper/70"
+              linkClassName="underline hover:text-paper"
+            />
           </div>
         </header>
         <div className="p-8">
@@ -376,9 +450,15 @@ function KlassischLayout({ resume, sections }: LayoutProps) {
           </h2>
           {personal.title && <p className="text-sm text-ochre">{personal.title}</p>}
           <p className="mt-2 text-xs text-ink/60 dark:text-ink-dark/60">
-            {[personal.city, personal.phone, personal.email].filter(Boolean).join(" | ") ||
-              "Ort | Telefon | E-Mail"}
+            {[personal.city, personal.phone, personal.email, birthLine(personal)]
+              .filter(Boolean)
+              .join(" | ") || "Ort | Telefon | E-Mail"}
           </p>
+          <LinksLine
+            personal={personal}
+            className="mt-1 text-xs text-ink/60 dark:text-ink-dark/60"
+            linkClassName="text-ochre hover:underline"
+          />
         </header>
 
         <div className="mt-6">

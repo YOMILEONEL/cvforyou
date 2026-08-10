@@ -6,6 +6,12 @@ export type PersonalInfo = {
   phone: string;
   city: string;
   photoUrl: string;
+  drivingLicense: string;
+  linkedinUrl: string;
+  githubUrl: string;
+  portfolioUrl: string;
+  birthPlace: string;
+  birthDate: string;
 };
 
 export type Experience = {
@@ -119,6 +125,12 @@ export const initialResumeData: ResumeData = {
     phone: "",
     city: "",
     photoUrl: "",
+    drivingLicense: "",
+    linkedinUrl: "",
+    githubUrl: "",
+    portfolioUrl: "",
+    birthPlace: "",
+    birthDate: "",
   },
   experience: [],
   education: [],
