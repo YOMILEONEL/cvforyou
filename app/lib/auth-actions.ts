@@ -40,16 +40,22 @@ export async function register(_prevState: AuthState, formData: FormData): Promi
     name: z.string().trim().min(2, { message: dict.auth.errors.nameRequired }),
     email: z.string().trim().email({ message: dict.auth.errors.invalidEmail }),
     password: z.string().min(8, { message: dict.auth.errors.passwordTooShort }),
+    confirmPassword: z.string(),
   });
 
   const parsed = registerSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
     password: formData.get("password"),
+    confirmPassword: formData.get("confirmPassword"),
   });
 
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? dict.auth.errors.genericInvalid };
+  }
+
+  if (parsed.data.password !== parsed.data.confirmPassword) {
+    return { error: dict.auth.errors.passwordMismatch };
   }
 
   const supabase = await createClient();

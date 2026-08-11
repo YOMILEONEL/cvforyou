@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 
+import { PasswordInput } from "@/app/components/password-input";
 import { useDictionary } from "@/app/lib/i18n/dictionary-context";
 import { login, type AuthState } from "@/app/lib/auth-actions";
 
@@ -26,13 +27,11 @@ export function LoginForm() {
 
       <label className="flex flex-col gap-1.5 text-sm font-medium text-ink dark:text-ink-dark">
         {t.passwordLabel}
-        <input
-          type="password"
+        <PasswordInput
           name="password"
           required
           autoComplete="current-password"
           placeholder="••••••••"
-          className="border border-ink/30 bg-paper px-3 py-2 text-sm text-ink outline-none focus:border-rust dark:border-ink-dark/30 dark:bg-paper-dark dark:text-ink-dark"
         />
       </label>
 

@@ -1,18 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useRef, useState } from "react";
 
+import { PasswordInput } from "@/app/components/password-input";
 import { register, type AuthState } from "@/app/lib/auth-actions";
 import { useDictionary } from "@/app/lib/i18n/dictionary-context";
 
 export function RegisterForm() {
   const [state, formAction, pending] = useActionState<AuthState, FormData>(register, undefined);
   const { dict } = useDictionary();
-  const { register: t } = dict.auth;
+  const { register: t, errors } = dict.auth;
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const confirmPasswordRef = useRef<HTMLInputElement>(null);
+  const [mismatch, setMismatch] = useState(false);
+
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    if (passwordRef.current?.value !== confirmPasswordRef.current?.value) {
+      event.preventDefault();
+      setMismatch(true);
+      return;
+    }
+    setMismatch(false);
+  }
 
   return (
-    <form action={formAction} className="mt-8 flex flex-col gap-4">
+    <form action={formAction} onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
       <label className="flex flex-col gap-1.5 text-sm font-medium text-ink dark:text-ink-dark">
         {t.nameLabel}
         <input
@@ -39,15 +52,27 @@ export function RegisterForm() {
 
       <label className="flex flex-col gap-1.5 text-sm font-medium text-ink dark:text-ink-dark">
         {t.passwordLabel}
-        <input
-          type="password"
+        <PasswordInput
+          ref={passwordRef}
           name="password"
           required
           autoComplete="new-password"
           placeholder={t.passwordPlaceholder}
-          className="border border-ink/30 bg-paper px-3 py-2 text-sm text-ink outline-none focus:border-rust dark:border-ink-dark/30 dark:bg-paper-dark dark:text-ink-dark"
         />
       </label>
+
+      <label className="flex flex-col gap-1.5 text-sm font-medium text-ink dark:text-ink-dark">
+        {t.confirmPasswordLabel}
+        <PasswordInput
+          ref={confirmPasswordRef}
+          name="confirmPassword"
+          required
+          autoComplete="new-password"
+          placeholder={t.confirmPasswordPlaceholder}
+        />
+      </label>
+
+      {mismatch && <p className="text-sm text-rust">{errors.passwordMismatch}</p>}
 
       <label className="flex items-start gap-2 text-sm text-ink/70 dark:text-ink-dark/70">
         <input type="checkbox" name="terms" required className="mt-0.5 h-4 w-4 border-ink/40" />
