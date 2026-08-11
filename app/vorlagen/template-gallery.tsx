@@ -73,7 +73,7 @@ export function TemplateGallery() {
               </div>
               <Link
                 href={`/editor?template=${encodeURIComponent(template.name)}`}
-                className="border border-ink px-3 py-1.5 text-sm font-medium text-ink opacity-0 transition-opacity group-hover:opacity-100 dark:border-ink-dark/60 dark:text-ink-dark"
+                className="border border-ink px-3 py-1.5 text-sm font-medium text-ink transition-colors hover:bg-ink hover:text-paper dark:border-ink-dark/60 dark:text-ink-dark dark:hover:bg-ink-dark dark:hover:text-paper-dark"
               >
                 {dict.templatesSection.select}
               </Link>
