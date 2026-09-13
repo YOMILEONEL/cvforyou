@@ -331,6 +331,9 @@ export const en: Dictionary = {
       errorRequestFailed: "The request to OpenAI failed. Please try again later.",
       errorInvalidResponseJson: "OpenAI did not return a valid result. Please try again.",
       errorInvalidResponseShape: "The response was not in the expected format. Please try again.",
+      historyHeading: "Previous checks",
+      historyUnknownCompany: "Unknown company",
+      historyUnknownRole: "Unknown role",
     },
     emptyPreview: "Your entries will appear here live as soon as you fill in data on the left.",
     jobMatchTip: {

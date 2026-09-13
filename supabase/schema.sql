@@ -62,7 +62,7 @@ create trigger resumes_set_updated_at
   for each row
   execute function public.set_updated_at();
 
--- CVio: resume photo storage
+-- CVforYou: resume photo storage
 -- Bucket is public-read (the photo ends up on a PDF the user shares
 -- externally anyway, and Puppeteer needs to fetch it without auth headers
 -- when rendering the PDF). Writes are restricted to the owning user via the
@@ -102,12 +102,12 @@ create policy "Users can delete their own resume photos"
   );
 
 -- CVforYou: job-match check usage
--- One row per user per calendar day the Gemini job-match check was used.
--- The (user_id, checked_on) primary key is what enforces "one check per
--- user per day": the app inserts a row before calling Gemini and relies on
--- the resulting unique-violation (23505) to reject a second check the same
--- day, and deletes the row again if the Gemini call itself fails so a
--- failed attempt doesn't burn the user's daily check.
+-- One row per user per calendar day the job-match check was used. The
+-- (user_id, checked_on) primary key is what enforces "one check per user
+-- per day": the app inserts a row before calling the AI provider and
+-- relies on the resulting unique-violation (23505) to reject a second
+-- check the same day, and deletes the row again if the AI call itself
+-- fails so a failed attempt doesn't burn the user's daily check.
 
 create table if not exists public.resume_match_usage (
   user_id uuid not null references auth.users (id) on delete cascade,
@@ -131,4 +131,44 @@ create policy "Users can insert their own match usage"
 drop policy if exists "Users can delete their own match usage" on public.resume_match_usage;
 create policy "Users can delete their own match usage"
   on public.resume_match_usage for delete
+  using (auth.uid() = user_id);
+
+-- CVforYou: resume match history
+-- One row per completed job-match check (result included), so a user can
+-- browse and reopen past checks for a given resume instead of losing the
+-- result on reload. Distinct from resume_match_usage above, which is only
+-- the daily rate-limit counter and holds no result data.
+
+create table if not exists public.resume_matches (
+  id uuid primary key default gen_random_uuid(),
+  resume_id uuid not null references public.resumes (id) on delete cascade,
+  user_id uuid not null references auth.users (id) on delete cascade,
+  company_name text not null default '',
+  job_title text not null default '',
+  job_posting text not null,
+  score int not null,
+  matched_skills jsonb not null default '[]'::jsonb,
+  missing_skills jsonb not null default '[]'::jsonb,
+  suggestions jsonb not null default '[]'::jsonb,
+  strengths jsonb not null default '[]'::jsonb,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists resume_matches_resume_id_idx on public.resume_matches (resume_id);
+
+alter table public.resume_matches enable row level security;
+
+drop policy if exists "Users can view their own resume matches" on public.resume_matches;
+create policy "Users can view their own resume matches"
+  on public.resume_matches for select
+  using (auth.uid() = user_id);
+
+drop policy if exists "Users can insert their own resume matches" on public.resume_matches;
+create policy "Users can insert their own resume matches"
+  on public.resume_matches for insert
+  with check (auth.uid() = user_id);
+
+drop policy if exists "Users can delete their own resume matches" on public.resume_matches;
+create policy "Users can delete their own resume matches"
+  on public.resume_matches for delete
   using (auth.uid() = user_id);

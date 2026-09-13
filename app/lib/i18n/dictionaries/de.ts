@@ -332,6 +332,9 @@ export const de = {
       errorRequestFailed: "Die Anfrage an OpenAI ist fehlgeschlagen. Bitte versuche es später erneut.",
       errorInvalidResponseJson: "OpenAI hat kein gültiges Ergebnis geliefert. Bitte versuche es erneut.",
       errorInvalidResponseShape: "Die Antwort hatte nicht das erwartete Format. Bitte versuche es erneut.",
+      historyHeading: "Bisherige Abgleiche",
+      historyUnknownCompany: "Unbekanntes Unternehmen",
+      historyUnknownRole: "Unbekannte Position",
     },
     emptyPreview: "Deine Eingaben erscheinen hier live, sobald du links Daten einträgst.",
     jobMatchTip: {

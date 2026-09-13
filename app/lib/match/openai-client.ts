@@ -16,6 +16,8 @@ const RESPONSE_LANGUAGE_NAMES: Record<ResumeLanguage, string> = {
 };
 
 export type ResumeMatchResult = {
+  companyName: string;
+  jobTitle: string;
   score: number;
   matchedSkills: string[];
   missingSkills: string[];
@@ -50,6 +52,8 @@ const MODEL_NAME = "gpt-5-nano";
 // Clamp/round rather than reject on a slightly out-of-spec score (e.g. 102):
 // the schema constrains the model but doesn't guarantee it.
 const resumeMatchResultSchema = z.object({
+  companyName: z.string(),
+  jobTitle: z.string(),
   score: z
     .number()
     .transform((value) => Math.max(0, Math.min(100, Math.round(value)))),
@@ -117,6 +121,14 @@ function buildResumeSummary(resume: ResumeData): string {
 const responseSchema = {
   type: "object",
   properties: {
+    companyName: {
+      type: "string",
+      description: "Name des Unternehmens aus der Stellenausschreibung, unverändert übernommen (nicht übersetzt). Leerer String, falls nicht eindeutig erkennbar.",
+    },
+    jobTitle: {
+      type: "string",
+      description: "Positions-/Stellenbezeichnung aus der Stellenausschreibung, unverändert übernommen (nicht übersetzt). Leerer String, falls nicht eindeutig erkennbar.",
+    },
     score: {
       type: "number",
       description: "Prozentualer Match-Score zwischen 0 (keine Übereinstimmung) und 100 (perfekte Übereinstimmung).",
@@ -142,7 +154,7 @@ const responseSchema = {
       description: "Die stärksten Argumente des Kandidaten für genau diese Stelle.",
     },
   },
-  required: ["score", "matchedSkills", "missingSkills", "suggestions", "strengths"],
+  required: ["companyName", "jobTitle", "score", "matchedSkills", "missingSkills", "suggestions", "strengths"],
   additionalProperties: false,
 };
 
@@ -161,7 +173,7 @@ export async function matchResumeAgainstJobPosting(
   const client = new OpenAI({ apiKey });
 
   const responseLanguage = RESPONSE_LANGUAGE_NAMES[resume.language];
-  const prompt = `Du bist ein erfahrener Recruiting-Assistent. Vergleiche den folgenden Lebenslauf mit der Stellenausschreibung und bewerte, wie gut sie zueinander passen. Antworte ausschließlich auf ${responseLanguage}. Sowohl die Fließtext-Vorschläge als auch die einzelnen Skill-/Stärken-Einträge müssen auf ${responseLanguage} formuliert sein, unabhängig davon, in welcher Sprache Lebenslauf oder Stellenausschreibung verfasst sind.
+  const prompt = `Du bist ein erfahrener Recruiting-Assistent. Vergleiche den folgenden Lebenslauf mit der Stellenausschreibung und bewerte, wie gut sie zueinander passen. Antworte ausschließlich auf ${responseLanguage}. Sowohl die Fließtext-Vorschläge als auch die einzelnen Skill-/Stärken-Einträge müssen auf ${responseLanguage} formuliert sein, unabhängig davon, in welcher Sprache Lebenslauf oder Stellenausschreibung verfasst sind. Extrahiere außerdem den Namen des Unternehmens (companyName) und die Positionsbezeichnung (jobTitle) aus der Stellenausschreibung, jeweils unverändert und nicht übersetzt; falls nicht eindeutig erkennbar, jeweils einen leeren String zurückgeben.
 
 LEBENSLAUF:
 ${buildResumeSummary(resume)}

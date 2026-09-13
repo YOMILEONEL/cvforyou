@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { JobMatchPanel } from "@/app/(app)/editor/job-match-panel";
+import type { ResumeMatch } from "@/app/lib/match-actions";
 import { JobMatchTip } from "@/app/(app)/editor/job-match-tip";
 import { LanguageToggle } from "@/app/(app)/editor/language-toggle";
 import { ResumePreview } from "@/app/(app)/editor/resume-preview";
@@ -27,6 +28,7 @@ type EditorClientProps = {
   initialResume: ResumeData;
   initialSections: SectionMeta[];
   jobMatchUsedToday: boolean;
+  initialJobMatches: ResumeMatch[];
 };
 
 type SaveStatus = "idle" | "saving" | "saved" | "error";
@@ -38,6 +40,7 @@ export function EditorClient({
   initialResume,
   initialSections,
   jobMatchUsedToday,
+  initialJobMatches,
 }: EditorClientProps) {
   const [title, setTitle] = useState(initialTitle);
   const [templateName, setTemplateName] = useState(initialTemplateName);
@@ -171,7 +174,12 @@ export function EditorClient({
               <TemplatePicker activeTemplate={templateName} onSelect={setTemplateName} />
             </div>
           ) : activeSection === "match" ? (
-            <JobMatchPanel resume={resume} usedToday={jobMatchUsedToday} />
+            <JobMatchPanel
+              resumeId={resumeId}
+              resume={resume}
+              usedToday={jobMatchUsedToday}
+              initialMatches={initialJobMatches}
+            />
           ) : (
             <SectionForm
               activeSection={activeSection}
