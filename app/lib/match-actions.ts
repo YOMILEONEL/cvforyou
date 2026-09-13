@@ -7,7 +7,7 @@ import {
   ResumeMatchError,
   type ResumeMatchErrorCode,
   type ResumeMatchResult,
-} from "@/app/lib/match/gemini-client";
+} from "@/app/lib/match/openai-client";
 import { createClient } from "@/app/lib/supabase/server";
 
 export type MatchErrorCode =
@@ -77,8 +77,9 @@ export async function matchResumeToJob(resumeData: ResumeData, jobPosting: strin
 
   const today = todayIso();
 
-  // Insert first, call Gemini second: the (user_id, checked_on) primary key
-  // makes this insert the atomic "have they already checked today" gate:
+  // Insert first, call the AI provider second: the (user_id, checked_on)
+  // primary key makes this insert the atomic "have they already checked
+  // today" gate:
   // no separate read-then-write race window. A unique violation (23505)
   // means today's check is already used.
   const { error: insertError } = await supabase
@@ -96,7 +97,7 @@ export async function matchResumeToJob(resumeData: ResumeData, jobPosting: strin
     const result = await matchResumeAgainstJobPosting(resumeData, trimmed);
     return { status: "success", result };
   } catch (error) {
-    // Gemini call failed after we already claimed today's check, give it
+    // The AI call failed after we already claimed today's check, give it
     // back so a transient or app-wide-quota error doesn't cost the user
     // their daily attempt.
     await supabase.from("resume_match_usage").delete().eq("user_id", user.id).eq("checked_on", today);

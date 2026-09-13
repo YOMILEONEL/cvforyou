@@ -1,18 +1,18 @@
-# AI-Agent: Stellenabgleich (Gemini)
+# AI-Agent: Stellenabgleich (OpenAI)
 
 Der Editor hat einen Tab **„Stellenabgleich"**, der einen Lebenslauf gegen
 den Text einer Stellenausschreibung bewertet: Match-Score, passende/fehlende
 Fähigkeiten, Verbesserungsvorschläge, Stärken. Das läuft über die
-**Gemini API (Google AI Studio)**, nicht über Anthropic/Claude. Das war
-eine bewusste Entscheidung wegen des kostenlosen Tiers (siehe
-[„Warum Gemini und nicht Claude"](#warum-gemini-und-nicht-claude) unten).
+**OpenAI API** mit dem Modell **`gpt-5-nano`**, dem aktuell günstigsten
+OpenAI-Modell (siehe [„Warum OpenAI"](#warum-openai) unten für die
+Vorgeschichte mit Gemini).
 
 ## Beteiligte Dateien
 
 | Datei | Rolle |
 |---|---|
-| `app/lib/match/gemini-client.ts` | Gemini-Client, Prompt-Bau, Structured-Output-Schema, Fehler-Klassifizierung |
-| `app/lib/match-actions.ts` | Server Action `matchResumeToJob`, Auth, Validierung, Rate-Limit, Aufruf des Gemini-Clients |
+| `app/lib/match/openai-client.ts` | OpenAI-Client, Prompt-Bau, Structured-Output-Schema, Fehler-Klassifizierung |
+| `app/lib/match-actions.ts` | Server Action `matchResumeToJob`, Auth, Validierung, Rate-Limit, Aufruf des OpenAI-Clients |
 | `app/(app)/editor/job-match-panel.tsx` | UI: Textarea für die Stellenausschreibung, Ergebnis-Karte, Fehleranzeige |
 | `supabase/schema.sql` (Tabelle `resume_match_usage`) | Persistenz für das Pro-Nutzer-Tageslimit |
 
@@ -25,9 +25,9 @@ JobMatchPanel (Client)
       2. Auth prüfen (supabase.auth.getUser())
       3. INSERT in resume_match_usage (user_id, checked_on: heute)
          → schlägt mit 23505 fehl, wenn heute schon genutzt
-      4. matchResumeAgainstJobPosting(resume, jobPosting)  [Gemini-Client]
+      4. matchResumeAgainstJobPosting(resume, jobPosting)  [OpenAI-Client]
          a. Lebenslauf-Daten → Klartext-Zusammenfassung
-         b. Prompt + responseSchema an Gemini senden
+         b. Prompt + JSON-Schema an die Responses API senden
          c. JSON-Antwort parsen, mit zod validieren
       5. Bei Fehler in Schritt 4: INSERT aus Schritt 3 wieder löschen
          (der Nutzer bekommt seinen Tages-Check zurück)
@@ -40,10 +40,10 @@ mit noch nicht gespeicherten Änderungen.
 
 ## Structured Output statt Freitext-Parsing
 
-Der Prompt wird nicht als Freitext an Gemini geschickt und die Antwort
-dann mit Regex/Heuristik geparst. Stattdessen erzwingt
-`generationConfig.responseSchema` (siehe `gemini-client.ts`) ein festes
-JSON-Schema:
+Der Prompt wird nicht als Freitext geschickt und die Antwort dann mit
+Regex/Heuristik geparst. Stattdessen erzwingt die **Responses API** über
+`text.format` (Typ `json_schema`, `strict: true`) ein festes JSON-Schema
+(siehe `openai-client.ts`):
 
 ```ts
 {
@@ -72,7 +72,7 @@ const RESPONSE_LANGUAGE_NAMES: Record<ResumeLanguage, string> = {
 };
 ```
 
-Gemini wird angewiesen, sowohl die Fließtext-Vorschläge als auch die
+Das Modell wird angewiesen, sowohl die Fließtext-Vorschläge als auch die
 einzelnen Skill-/Stärken-Einträge in dieser Sprache zu formulieren,
 unabhängig davon, in welcher Sprache die eingefügte Stellenausschreibung
 selbst verfasst ist. Die vier Label-Überschriften im Ergebnis-Panel
@@ -92,26 +92,26 @@ komplett unterschiedlichen Gründen:
 | | Wer begrenzt? | Umfang | Wo im Code? |
 |---|---|---|---|
 | **Pro-Nutzer-Limit** | CVforYou selbst (Produktentscheidung) | 1 Check pro Nutzer pro Kalendertag | `resume_match_usage`-Tabelle, Primary Key `(user_id, checked_on)` |
-| **App-weites Google-Kontingent** | Google (Gratis-Tier) | Aktuell **RPD 20 / RPM 5** für die Flash-Modelle, **für das ganze Google-Cloud-Projekt zusammen**, nicht pro Nutzer (siehe Google AI Studio → „Limite de débit") | HTTP 429 von Gemini, abgefangen in `gemini-client.ts` |
+| **App-weites Kontingent** | OpenAI (Rate-Limit bzw. aufgebrauchtes Guthaben) | Abhängig vom Usage-Tier des OpenAI-Kontos, OpenAI veröffentlicht keine für alle gültige feste Zahl | HTTP 429 von OpenAI, abgefangen in `openai-client.ts` |
 
 **Warum ein Insert-first-Ansatz für das Pro-Nutzer-Limit?** Die Tabelle hat
 `(user_id, checked_on)` als Primary Key. `matchResumeToJob` versucht *zuerst*,
-eine Zeile für heute einzufügen, noch bevor Gemini überhaupt aufgerufen
+eine Zeile für heute einzufügen, noch bevor die KI überhaupt aufgerufen
 wird. Ein Unique-Constraint-Verstoß (Postgres-Fehlercode `23505`) bedeutet
 dann eindeutig „heute schon genutzt". Das ist atomar: Es gibt kein
 Read-then-Write-Zeitfenster, in dem zwei parallele Requests sich beide für
 berechtigt halten.
 
-**Warum wird die Zeile bei einem Gemini-Fehler wieder gelöscht?** Weil der
-Check erst *nach* dem erfolgreichen Insert an Gemini geschickt wird: schlägt
-der Gemini-Call fehl (Netzwerkfehler, App-weites Kontingent aufgebraucht,
-ungültige Antwort), hat der Nutzer keinen Nutzen aus seinem Tages-Check
-gezogen. `match-actions.ts` löscht die Zeile deshalb im `catch`-Block wieder,
-damit ein fehlgeschlagener Versuch nicht auf Kosten des Nutzers geht.
+**Warum wird die Zeile bei einem Fehler wieder gelöscht?** Weil der Check
+erst *nach* dem erfolgreichen Insert an OpenAI geschickt wird: schlägt der
+Aufruf fehl (Netzwerkfehler, Kontingent aufgebraucht, ungültige Antwort),
+hat der Nutzer keinen Nutzen aus seinem Tages-Check gezogen. `match-actions.ts`
+löscht die Zeile deshalb im `catch`-Block wieder, damit ein fehlgeschlagener
+Versuch nicht auf Kosten des Nutzers geht.
 
 ## Fehlercodes
 
-`ResumeMatchError` (in `gemini-client.ts`) trägt einen `code`, der bis ins
+`ResumeMatchError` (in `openai-client.ts`) trägt einen `code`, der bis ins
 UI durchgereicht wird (`MatchErrorCode` in `match-actions.ts`):
 
 | Code | Bedeutung | Auslöser |
@@ -120,11 +120,11 @@ UI durchgereicht wird (`MatchErrorCode` in `match-actions.ts`):
 | `input_too_long` | > 8000 Zeichen | Client-seitige Validierung |
 | `not_authenticated` | Kein eingeloggter Nutzer | `supabase.auth.getUser()` |
 | `daily_limit_reached` | Pro-Nutzer-Tageslimit erreicht | Postgres `23505` beim Insert |
-| `missing_api_key` | `GEMINI_API_KEY` fehlt auf dem Server | Prüfung vor dem Gemini-Aufruf |
-| `app_quota_exceeded` | Googles App-weites Kontingent für heute aufgebraucht | Gemini antwortet mit HTTP 429 |
-| `invalid_api_key` | Key ungültig/widerrufen | Gemini antwortet mit HTTP 401/403 |
-| `request_failed` | Sonstiger Netzwerk-/API-Fehler | alles andere aus `generateContent()` |
-| `invalid_response` | Antwort kein gültiges JSON oder besteht die zod-Validierung nicht | Nach dem Gemini-Aufruf |
+| `missing_api_key` | `OPENAI_API_KEY` fehlt auf dem Server | Prüfung vor dem OpenAI-Aufruf |
+| `app_quota_exceeded` | Rate-Limit oder Guthaben des OpenAI-Kontos aufgebraucht | OpenAI antwortet mit HTTP 429 (`RateLimitError`) |
+| `invalid_api_key` | Key ungültig/widerrufen | OpenAI antwortet mit HTTP 401/403 (`AuthenticationError`/`PermissionDeniedError`) |
+| `request_failed` | Sonstiger Netzwerk-/API-Fehler | alles andere aus `responses.create()` |
+| `invalid_response` | Antwort kein gültiges JSON oder besteht die zod-Validierung nicht | Nach dem OpenAI-Aufruf |
 | `unexpected` | Unbekannter Fehler | Fallback in `match-actions.ts` |
 
 Im UI (`job-match-panel.tsx`) werden `daily_limit_reached` und
@@ -134,41 +134,46 @@ Fehlerzeile. Der Nutzer soll sofort verstehen, dass hier kein Bug vorliegt,
 sondern eine Kapazitätsgrenze, und wer die überschritten hat (er selbst oder
 die App insgesamt).
 
-## Modellwahl: `gemini-flash-latest`
+## Modellwahl: `gpt-5-nano`
 
-Der Code pinnt **nicht** einen datierten Modellnamen wie `gemini-2.5-flash`,
-sondern den von Google gepflegten Alias `gemini-flash-latest`. Grund: Genau
-dieses Problem ist beim Aufbau der Funktion aufgetreten. `gemini-2.5-flash`
-wurde für neu erstellte API-Keys ohne Vorwarnung gesperrt
-(„This model … is no longer available to new users"), obwohl es in der
-Modell-Liste noch auftauchte. Der `-latest`-Alias verschiebt dieses Risiko
-zu Google, statt dass CVforYou bei jeder Modell-Ablösung erneut brechen kann.
+Das aktuell günstigste OpenAI-Modell ($0.05 / 1 Mio. Input-Tokens, $0.40 /
+1 Mio. Output-Tokens, Stand der Umstellung auf OpenAI), für eine strukturierte
+Textvergleichsaufgabe wie diese mehr als ausreichend. Ein Lebenslauf-Abgleich
+kostet dadurch Bruchteile eines Cents.
 
-## Warum Gemini und nicht Claude
+## Warum OpenAI
 
-Anthropic (Claude) hat **keinen dauerhaft kostenlosen API-Tier**: jede
-Nutzung erfordert eine hinterlegte Zahlungsmethode, auch wenn die Kosten pro
-Anfrage minimal wären. Für ein privates Freundeskreis-Projekt ohne Budget
-war das der ausschlaggebende Punkt für Google AI Studio / Gemini
-(kostenloses Tageskontingent ohne Kreditkarte).
+Ursprünglich lief dieses Feature über Google Gemini (dauerhaft kostenloses
+Tageskontingent, kein Zahlungsmittel nötig, siehe Git-Historie). Das wurde
+durch einen Wechsel bei Google unbrauchbar: Neu erstellte Gemini-API-Keys
+bekommen inzwischen ausschließlich das neue `AQ.`-Auth-Key-Format, das die
+Gemini API selbst mit `401 ACCESS_TOKEN_TYPE_UNSUPPORTED` ablehnt, ein zum
+Zeitpunkt der Umstellung breit gemeldeter, ungelöster Bug auf Google-Seite,
+unabhängig vom verwendeten SDK.
+
+Anthropic (Claude) hat weiterhin **keinen dauerhaft kostenlosen API-Tier**,
+das war schon vorher der Grund gegen Claude. OpenAI hat ebenfalls keinen
+dauerhaften Gratis-Tier, ein hinterlegtes Zahlungsmittel ist Pflicht, aber
+`gpt-5-nano` ist bei der geringen Nutzungsgröße dieses Projekts (max. ein
+Check pro Nutzer pro Tag) so günstig, dass die tatsächlichen Kosten
+vernachlässigbar sind, anders als bei Claudes Preisniveau.
 
 ## Konfiguration
 
 ```
 # .env.local
-GEMINI_API_KEY=…   # https://aistudio.google.com/apikey
+OPENAI_API_KEY=…   # https://platform.openai.com/api-keys
 ```
 
-Der Key wird ausschließlich serverseitig verwendet (`gemini-client.ts`
+Der Key wird ausschließlich serverseitig verwendet (`openai-client.ts`
 importiert `"server-only"`). Er landet nie im Browser-Bundle.
 
 ## Bekannte Grenzen
 
 - Keine Undo/Historie vergangener Abgleiche: nur das letzte Ergebnis wird
   im React-State gehalten, ein Seiten-Reload verwirft es.
-- Der Gemini-Aufruf ist nicht gestreamt: der Nutzer wartet auf die
-  vollständige Antwort (bei `gemini-flash-latest` typischerweise wenige
-  Sekunden).
+- Der OpenAI-Aufruf ist nicht gestreamt: der Nutzer wartet auf die
+  vollständige Antwort (bei `gpt-5-nano` typischerweise wenige Sekunden).
 - Kein Retry mit Backoff bei transienten Fehlern (z. B. 503): der Nutzer
   muss manuell erneut klicken (was dank Rollback-Logik seinen Tages-Check
   nicht kostet).

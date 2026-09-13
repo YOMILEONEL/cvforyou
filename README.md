@@ -6,7 +6,7 @@ Freundes- und Bekanntenkreis: Lebenslauf im Editor zusammenstellen, aus
 Stellenausschreibung abgleichen lassen.
 
 Gebaut mit Next.js 16 (App Router), Supabase (Auth, Postgres, Storage) und
-der Gemini API für den KI-Stellenabgleich.
+der OpenAI API für den KI-Stellenabgleich.
 
 ## Features
 
@@ -17,7 +17,7 @@ der Gemini API für den KI-Stellenabgleich.
   Klassisch), inkl. einer ATS-freundlichen Vorlage ohne Foto.
 - **PDF-Export**: serverseitig gerendert (Puppeteer/Chromium), sieht exakt
   wie die Live-Vorschau aus.
-- **KI-Stellenabgleich** (Gemini): vergleicht den Lebenslauf mit einer
+- **KI-Stellenabgleich** (OpenAI): vergleicht den Lebenslauf mit einer
   eingefügten Stellenausschreibung und liefert Match-Score, fehlende
   Skills und Verbesserungsvorschläge. Ein Check pro Nutzer und Tag.
 - **Auto-Save** im Editor (debounced), Foto-Upload direkt zu Supabase
@@ -33,7 +33,7 @@ der Gemini API für den KI-Stellenabgleich.
 | UI | React 19, Tailwind CSS 4 |
 | Datenbank/Auth/Storage | Supabase (Postgres + RLS, Supabase Auth, Supabase Storage) |
 | PDF-Rendering | Puppeteer (lokal) / `puppeteer-core` + `@sparticuz/chromium` (serverless) |
-| KI-Stellenabgleich | Google Gemini API (`gemini-flash-latest`) |
+| KI-Stellenabgleich | OpenAI API (`gpt-5-nano`) |
 | Validierung | zod |
 
 ## Setup
@@ -43,8 +43,8 @@ der Gemini API für den KI-Stellenabgleich.
 - Node.js (siehe `package.json`/`.nvmrc`, falls vorhanden, sonst aktuelle
   LTS-Version)
 - Ein [Supabase](https://supabase.com)-Projekt
-- Ein kostenloser [Google AI Studio](https://aistudio.google.com/apikey)
-  API-Key (für den Stellenabgleich)
+- Ein [OpenAI](https://platform.openai.com/api-keys)-API-Key mit hinterlegtem
+  Zahlungsmittel (für den Stellenabgleich, Kosten pro Check sind minimal)
 
 ### 1. Abhängigkeiten installieren
 
@@ -64,7 +64,7 @@ Dann in `.env.local` eintragen:
 |---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase-Dashboard → Project Settings → API |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase-Dashboard → Project Settings → API |
-| `GEMINI_API_KEY` | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) (kostenloser Tier, kein Zahlungsmittel nötig) |
+| `OPENAI_API_KEY` | [platform.openai.com/api-keys](https://platform.openai.com/api-keys) (Zahlungsmittel im Konto nötig) |
 
 `.env.local` ist gitignored. In `.env.local.example` sollten daher nie
 echte Werte landen: diese Datei ist eingecheckt und dient nur als Vorlage
@@ -103,7 +103,7 @@ app/
   (auth)/             Login, Registrierung
   api/resumes/[id]/pdf/  Route Handler für PDF-Export
   components/         Landingpage-Komponenten
-  lib/                Server Actions, Supabase-Clients, PDF-Rendering, Gemini-Client
+  lib/                Server Actions, Supabase-Clients, PDF-Rendering, OpenAI-Client
   datenschutz/, impressum/, kontakt/   Rechtliche Pflichtseiten
 supabase/
   schema.sql          Tabellen, RLS-Policies, Storage-Bucket-Setup
@@ -116,7 +116,7 @@ Diese README deckt den Überblick ab. Für die Details einzelner Subsysteme:
 
 - [**Auth**](docs/auth.md): Supabase Auth, Middleware/Session-Refresh,
   welcher Supabase-Client wo verwendet wird, RLS als Autorisierungsschicht.
-- [**AI-Agent (Stellenabgleich)**](docs/ai-agent.md): Gemini-Integration,
+- [**AI-Agent (Stellenabgleich)**](docs/ai-agent.md): OpenAI-Integration,
   Structured Output, die zwei getrennten Rate-Limits (pro Nutzer vs.
   App-weites Google-Kontingent), Fehlercodes.
 - [**API-Anfragen-Flow**](docs/api-request-flow.md): Server Components vs.
@@ -133,7 +133,7 @@ Diese README deckt den Überblick ab. Für die Details einzelner Subsysteme:
 Gedacht für [Vercel](https://vercel.com) + Supabase. Beim Deployment:
 
 - Alle drei Env-Vars (`NEXT_PUBLIC_SUPABASE_URL`,
-  `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `GEMINI_API_KEY`) als Vercel-Project-Env-Vars
+  `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `OPENAI_API_KEY`) als Vercel-Project-Env-Vars
   hinterlegen.
 - `supabase/schema.sql` gegen das Produktions-Supabase-Projekt ausführen
   (separates Projekt empfohlen, nicht dasselbe wie lokal/Dev).

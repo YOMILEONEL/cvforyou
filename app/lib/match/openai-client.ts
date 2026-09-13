@@ -1,12 +1,12 @@
 import "server-only";
 
-import { GoogleGenerativeAI, GoogleGenerativeAIFetchError, SchemaType, type ResponseSchema } from "@google/generative-ai";
+import OpenAI from "openai";
 import { z } from "zod";
 
 import type { ResumeData, ResumeLanguage } from "@/app/(app)/editor/types";
 import { getDictionary } from "@/app/lib/i18n/get-dictionary";
 
-// Name Gemini can reliably act on in its own instruction, not the resume's
+// Name the model can reliably act on in its own instruction, not the resume's
 // UI label ("Français"), an actual language name for the "respond in X"
 // instruction.
 const RESPONSE_LANGUAGE_NAMES: Record<ResumeLanguage, string> = {
@@ -24,10 +24,9 @@ export type ResumeMatchResult = {
 };
 
 // "app_quota_exceeded" is distinct from the per-user daily-check limit
-// (that one lives in match-actions.ts): this is Google's free-tier quota,
-// shared across every user of the app on one API key/project (currently
-// 20 requests/day for the Flash models (see the AI Studio rate-limit
-// dashboard, Google doesn't publish a stable number in docs).
+// (that one lives in match-actions.ts): this is a 429 from OpenAI itself,
+// either a rate limit or the account running out of credit, shared across
+// every user of the app on one API key.
 export type ResumeMatchErrorCode =
   | "missing_api_key"
   | "app_quota_exceeded"
@@ -44,11 +43,9 @@ export class ResumeMatchError extends Error {
   }
 }
 
-// "gemini-flash-latest" is Google's maintained alias for the current
-// recommended Flash model. Pinning a dated model name (e.g.
-// "gemini-2.5-flash") breaks without warning once Google phases it out for
-// new API keys, which is what happened here.
-const MODEL_NAME = "gemini-flash-latest";
+// The cheapest current OpenAI model. More than accurate enough for a
+// structured resume/job-posting comparison task like this one.
+const MODEL_NAME = "gpt-5-nano";
 
 // Clamp/round rather than reject on a slightly out-of-spec score (e.g. 102):
 // the schema constrains the model but doesn't guarantee it.
@@ -113,35 +110,40 @@ function buildResumeSummary(resume: ResumeData): string {
   return lines.join("\n").trim() || "(Lebenslauf ist noch leer.)";
 }
 
-const responseSchema: ResponseSchema = {
-  type: SchemaType.OBJECT,
+// Structured Outputs schema for the Responses API (app/lib/match/openai-client.ts
+// keeps this separate from the zod schema below, same split as before: this
+// one constrains the model's generation, the zod one validates what comes
+// back).
+const responseSchema = {
+  type: "object",
   properties: {
     score: {
-      type: SchemaType.INTEGER,
+      type: "number",
       description: "Prozentualer Match-Score zwischen 0 (keine Übereinstimmung) und 100 (perfekte Übereinstimmung).",
     },
     matchedSkills: {
-      type: SchemaType.ARRAY,
-      items: { type: SchemaType.STRING },
+      type: "array",
+      items: { type: "string" },
       description: "Fähigkeiten/Anforderungen aus der Stellenausschreibung, die im Lebenslauf erkennbar vorhanden sind.",
     },
     missingSkills: {
-      type: SchemaType.ARRAY,
-      items: { type: SchemaType.STRING },
+      type: "array",
+      items: { type: "string" },
       description: "Anforderungen aus der Stellenausschreibung, die im Lebenslauf fehlen oder nicht erkennbar sind.",
     },
     suggestions: {
-      type: SchemaType.ARRAY,
-      items: { type: SchemaType.STRING },
+      type: "array",
+      items: { type: "string" },
       description: "Konkrete, umsetzbare Vorschläge, um den Lebenslauf besser auf diese Stelle zuzuschneiden.",
     },
     strengths: {
-      type: SchemaType.ARRAY,
-      items: { type: SchemaType.STRING },
+      type: "array",
+      items: { type: "string" },
       description: "Die stärksten Argumente des Kandidaten für genau diese Stelle.",
     },
   },
   required: ["score", "matchedSkills", "missingSkills", "suggestions", "strengths"],
+  additionalProperties: false,
 };
 
 export async function matchResumeAgainstJobPosting(
@@ -151,19 +153,12 @@ export async function matchResumeAgainstJobPosting(
   const dict = await getDictionary();
   const t = dict.editor.jobMatch;
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
     throw new ResumeMatchError(t.errorMissingApiKey, "missing_api_key");
   }
 
-  const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({
-    model: MODEL_NAME,
-    generationConfig: {
-      responseMimeType: "application/json",
-      responseSchema,
-    },
-  });
+  const client = new OpenAI({ apiKey });
 
   const responseLanguage = RESPONSE_LANGUAGE_NAMES[resume.language];
   const prompt = `Du bist ein erfahrener Recruiting-Assistent. Vergleiche den folgenden Lebenslauf mit der Stellenausschreibung und bewerte, wie gut sie zueinander passen. Antworte ausschließlich auf ${responseLanguage}. Sowohl die Fließtext-Vorschläge als auch die einzelnen Skill-/Stärken-Einträge müssen auf ${responseLanguage} formuliert sein, unabhängig davon, in welcher Sprache Lebenslauf oder Stellenausschreibung verfasst sind.
@@ -176,18 +171,27 @@ ${jobPosting}`;
 
   let text: string;
   try {
-    const result = await model.generateContent(prompt);
-    text = result.response.text();
+    const response = await client.responses.create({
+      model: MODEL_NAME,
+      input: prompt,
+      text: {
+        format: {
+          type: "json_schema",
+          name: "resume_match_result",
+          schema: responseSchema,
+          strict: true,
+        },
+      },
+    });
+    text = response.output_text;
   } catch (error) {
-    console.error("[resume-match] Gemini generateContent failed:", error);
+    console.error("[resume-match] OpenAI request failed:", error);
 
-    if (error instanceof GoogleGenerativeAIFetchError) {
-      if (error.status === 429) {
-        throw new ResumeMatchError(t.errorAppQuota, "app_quota_exceeded", { cause: error });
-      }
-      if (error.status === 401 || error.status === 403) {
-        throw new ResumeMatchError(t.errorInvalidApiKey, "invalid_api_key", { cause: error });
-      }
+    if (error instanceof OpenAI.RateLimitError) {
+      throw new ResumeMatchError(t.errorAppQuota, "app_quota_exceeded", { cause: error });
+    }
+    if (error instanceof OpenAI.AuthenticationError || error instanceof OpenAI.PermissionDeniedError) {
+      throw new ResumeMatchError(t.errorInvalidApiKey, "invalid_api_key", { cause: error });
     }
 
     throw new ResumeMatchError(t.errorRequestFailed, "request_failed", { cause: error });
