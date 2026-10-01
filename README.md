@@ -8,6 +8,10 @@ Stellenausschreibung abgleichen lassen.
 Gebaut mit Next.js 16 (App Router), Supabase (Auth, Postgres, Storage) und
 der OpenAI API für den KI-Stellenabgleich.
 
+## Architektur
+
+![Architekturdiagramm](docs/diagram.png)
+
 ## Features
 
 - **Editor** mit Live-Vorschau: persönliche Daten, Berufserfahrung,
@@ -118,7 +122,7 @@ Diese README deckt den Überblick ab. Für die Details einzelner Subsysteme:
   welcher Supabase-Client wo verwendet wird, RLS als Autorisierungsschicht.
 - [**AI-Agent (Stellenabgleich)**](docs/ai-agent.md): OpenAI-Integration,
   Structured Output, die zwei getrennten Rate-Limits (pro Nutzer vs.
-  App-weites Google-Kontingent), Fehlercodes.
+  App-weites Kontingent), Fehlercodes.
 - [**API-Anfragen-Flow**](docs/api-request-flow.md): Server Components vs.
   Server Actions vs. der eine Route Handler, Persistenzmodell,
   Datei-Upload-Flow.
